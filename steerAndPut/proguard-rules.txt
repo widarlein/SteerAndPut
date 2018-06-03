@@ -1,0 +1,40 @@
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int i(...);
+    public static int w(...);
+    public static int d(...);
+    public static int e(...);
+}
+
+-keep class se.geecity.android.steerandput.common.model.** { *; }
+-keep class se.geecity.android.steerandput.historicalstation.model.** { *; }
+-dontwarn se.geecity.android.**
+-keepattributes Exceptions, Signature, InnerClasses
+
+-dontwarn org.codehaus.**
+-dontwarn okio.**
+
+# ProGuard Configuration file
+#
+# See http://proguard.sourceforge.net/index.html#manual/usage.html
+
+# Needed to keep generic types and @Key annotations accessed via reflection
+
+-keepattributes Signature,RuntimeVisibleAnnotations,AnnotationDefault
+
+-keepclassmembers class * {
+  @com.google.api.client.util.Key <fields>;
+}
+
+# Needed by google-http-client-android when linking against an older platform version
+
+-dontwarn com.google.api.client.extensions.android.**
+
+# Needed by google-api-client-android when linking against an older platform version
+
+-dontwarn com.google.api.client.googleapis.extensions.android.**
+
+# Needed by google-play-services when linking against an older platform version
+
+-dontwarn com.google.android.gms.**

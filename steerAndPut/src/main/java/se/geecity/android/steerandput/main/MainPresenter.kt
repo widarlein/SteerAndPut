@@ -1,0 +1,53 @@
+/*
+ * MIT License
+ * 
+ * Copyright (c) 2018 Alexander Widar
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package se.geecity.android.steerandput.main
+
+import se.geecity.android.steerandput.common.view.ViewIdentifier
+import se.geecity.android.steerandput.main.interactor.StationsInteractor
+
+/**
+ * Presenter for the main view of the app.
+ */
+class MainPresenter(val stationsInteractor: StationsInteractor) {
+
+    lateinit var mainView: MainView
+
+    val stationsCallback: (StationsInteractor.Result) -> Unit = { result ->
+
+        if (result.success) {
+            mainView.newStations(result.stations)
+        } else {
+            val errorText: String = result.errorText ?: "Error was made"
+            mainView.onStationError(errorText, result.throwable)
+        }
+    }
+
+    fun refreshPressed() {
+        stationsInteractor.getStations(stationsCallback)
+    }
+
+    fun viewActiveFromBackstack(viewIdentifier: ViewIdentifier) {
+        mainView.markTabAsActiveWithoutEvent(viewIdentifier)
+    }
+}

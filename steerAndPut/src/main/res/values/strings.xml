@@ -1,0 +1,58 @@
+<!--
+
+    MIT License
+
+    Copyright (c) 2018 Alexander Widar
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
+
+    <string name="app_name">SteerAndPut</string>
+    <string name="title_activity_main">SteerAndPut</string>
+
+    <!-- MAIN -->
+    <string name="main_tab_favorites_title">Favorites</string>
+    <string name="main_tab_list_title">List</string>
+    <string name="main_tab_map_title">Map</string>
+    <string name="main_menu_open_source_dialog">Open Source Notices</string>
+    <string name="main_menu_refresh_text">Refresh</string>
+
+    <!-- LIST FRAGMENT -->
+    <string name="station_list_item_bikes_label">Free bikes: </string>
+    <string name="station_list_item_stands_label">Free stands: </string>
+    <string name="station_list_fragment_context_add_favorite">Add to favorites</string>
+    <string name="station_list_fragment_context_remove_favorite">Remove from favorites</string>
+    <string name="list_fragment_connection_error_title">Oh No!</string>
+    <string name="list_fragment_connection_error_text">There seems to be something wrong with the connection. Check that you\'re connected to the Internet or in worst case there is something wrong with the server and you have to check again later.. (the server, not the app. The app is fine, trust me)</string>
+    <string name="station_list_fragment_context_details">Details</string>
+
+    <!--MAP FRAGMENT-->
+    <string name="map_marker_snippet_bikes">Bikes: </string>
+    <string name="map_marker_snippet_stands">Stands: </string>
+
+    <!--STATION FRAGMENT-->
+    <string name="station_chart_title">Last 6 hours</string>
+
+    <!--LICENSE DIALOG FRAGMENT-->
+    <string name="licence_dialog_explaination">This app uses some open source dependencies which are awesome! They are listed here along with the open source license they are using. If you wish to <a href="https://github.com/widarlein/SteerAndPut">check out this app on github, you can!</a></string>
+    <string name="licence_dialog_ok">OK</string>
+    <string name="licence_dialog_title">Open Source Licenses</string>
+</resources>
