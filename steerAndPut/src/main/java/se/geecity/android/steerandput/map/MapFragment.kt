@@ -120,7 +120,9 @@ class MapFragment : StationShowingFragment() {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        mapView.onSaveInstanceState(outState)
+        if (mapView != null) {
+            mapView.onSaveInstanceState(outState)
+        }
     }
 
     private fun setupMap() {
