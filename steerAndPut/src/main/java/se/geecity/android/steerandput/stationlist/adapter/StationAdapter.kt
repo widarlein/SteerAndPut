@@ -54,6 +54,12 @@ class StationAdapter(context: Context, val stationInteractionListener: StationIn
     }
     var favorites: MutableList<Station> = mutableListOf()
     var location: Location? = null
+        set(value) {
+            field = value
+            sortStations()
+            notifyDataSetChanged()
+        }
+
     var adapterDataObserver: AdapterDataObserver? = null
 
     private val stationComparator = StationComparator()
