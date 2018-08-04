@@ -78,6 +78,7 @@ class MapFragment : StationShowingFragment() {
         if (arguments != null) {
             parseStationsArgument(arguments)?.also { stations = it }
             focusStation = parseFocusStationArgument(arguments)
+            location = parseLocationArgument(arguments)
         }
     }
 

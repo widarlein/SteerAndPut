@@ -59,6 +59,8 @@ abstract class StationShowingFragment : Fragment() {
         }
 
         fun parseFocusStationArgument(args: Bundle): Station? = args.getParcelable(ARG_FOCUS_STATION)
+
+        fun parseLocationArgument(args: Bundle): Location? = args.getParcelable(ARG_LOCATION)
     }
 
     abstract var stations: List<Station>
