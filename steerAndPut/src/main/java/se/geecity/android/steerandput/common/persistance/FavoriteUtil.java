@@ -43,7 +43,7 @@ public class FavoriteUtil {
 
     private static String TAG = FavoriteUtil.class.getSimpleName();
 
-    private static String FILENAME = "USER_FAVORITES";
+    private static String FILENAME = "USER_FAVORITES2";
 
     private Context mContext;
 
