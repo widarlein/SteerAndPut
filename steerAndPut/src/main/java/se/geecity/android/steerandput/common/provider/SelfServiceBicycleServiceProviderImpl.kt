@@ -90,10 +90,10 @@ class SelfServiceBicycleServiceProviderImpl(private val apiKey: String) : SelfSe
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
                     //TODO JsonSyntaxException (on wifis redirecting you to login page, eg)
-                    val stations: List<Station> = gson.fromJson(response.body().string(), stationListTypeToken.type)
+                    val stations: List<Station> = gson.fromJson(response.body()!!.string(), stationListTypeToken.type)
                     success(stations)
                 } else {
-                    failure(response.body().string(), null)
+                    failure(response.body()!!.string(), null)
                 }
             }
         })
@@ -113,10 +113,10 @@ class SelfServiceBicycleServiceProviderImpl(private val apiKey: String) : SelfSe
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    val historicalStations: List<HistoricalStation> = gson.fromJson(response.body().string(), historicalStationListTypeToken.type)
+                    val historicalStations: List<HistoricalStation> = gson.fromJson(response.body()!!.string(), historicalStationListTypeToken.type)
                     success(historicalStations)
                 } else {
-                    failure(response.body().string(), null)
+                    failure(response.body()!!.string(), null)
                 }
             }
         })
