@@ -54,7 +54,7 @@ class ListFragment : AbsListFragment() {
 
     override fun parseArguments() {
         super.parseArguments()
-        val stations = StationShowingFragment.parseStationsArgument(arguments)
+        val stations = StationShowingFragment.parseStationsArgument(arguments!!)
         if (stations != null) {
             this.stations = stations
         } else if (!this.stations.isEmpty()) {

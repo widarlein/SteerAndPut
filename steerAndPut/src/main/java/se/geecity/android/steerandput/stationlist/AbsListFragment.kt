@@ -78,23 +78,23 @@ abstract class AbsListFragment : StationShowingFragment() {
         return rootView
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
     }
 
     protected fun init() {
-        adapter = StationAdapter(context, stationInteractionListener)
+        adapter = StationAdapter(context!!, stationInteractionListener)
 
         recyclerView.adapter = adapter
         listSwipeRefreshLayout.setOnRefreshListener(onRefreshListener)
 
-        localBroadcastManager = LocalBroadcastManager.getInstance(context)
+        localBroadcastManager = LocalBroadcastManager.getInstance(context!!)
         favoriteUtil = FavoriteUtil(context)
 
         parseArguments()
 
-        connectionErrorView = activity.layoutInflater.inflate(R.layout.view_list_connection_error, list_listcontainer, false)
+        connectionErrorView = activity!!.layoutInflater.inflate(R.layout.view_list_connection_error, list_listcontainer, false)
         connectionErrorView.visibility = View.GONE
         list_listcontainer.addView(connectionErrorView,
                 FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -159,7 +159,7 @@ abstract class AbsListFragment : StationShowingFragment() {
     }
 
     protected open fun parseArguments() {
-        val location = parseLocationArgument(arguments)
+        val location = parseLocationArgument(arguments!!)
         if (location != null) {
             this.location = location
             adapter.location = location

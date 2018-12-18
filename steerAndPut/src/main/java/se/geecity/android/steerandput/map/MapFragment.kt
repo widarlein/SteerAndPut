@@ -67,7 +67,7 @@ class MapFragment : StationShowingFragment() {
         return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapView.onCreate(savedInstanceState)
         parseArguments()
@@ -75,10 +75,10 @@ class MapFragment : StationShowingFragment() {
     }
 
     fun parseArguments() {
-        if (arguments != null) {
-            parseStationsArgument(arguments)?.also { stations = it }
-            focusStation = parseFocusStationArgument(arguments)
-            location = parseLocationArgument(arguments)
+        arguments?.also {  args ->
+            parseStationsArgument(args)?.also { stations = it }
+            focusStation = parseFocusStationArgument(args)
+            location = parseLocationArgument(args)
         }
     }
 
@@ -106,7 +106,7 @@ class MapFragment : StationShowingFragment() {
 
     override fun onStop() {
         super.onStop()
-        LocalBroadcastManager.getInstance(activity).unregisterReceiver(mBroadcastReceiver)
+        LocalBroadcastManager.getInstance(activity!!).unregisterReceiver(mBroadcastReceiver)
     }
 
     override fun onDestroyView() {
@@ -119,7 +119,7 @@ class MapFragment : StationShowingFragment() {
         mapView.onLowMemory()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         if (mapView != null) {
             mapView.onSaveInstanceState(outState)
@@ -127,7 +127,7 @@ class MapFragment : StationShowingFragment() {
     }
 
     private fun setupMap() {
-        if (hasFineLocationPermission(activity)) {
+        if (hasFineLocationPermission(activity!!)) {
             map.isMyLocationEnabled = true
         }
 
@@ -174,7 +174,7 @@ class MapFragment : StationShowingFragment() {
 
     fun setupLocalBroadcastManager() {
         val intentFilter = IntentFilter(ACTION_FINISHED_REFRESHING_STATIONS)
-        LocalBroadcastManager.getInstance(activity).registerReceiver(mBroadcastReceiver, intentFilter)
+        LocalBroadcastManager.getInstance(activity!!).registerReceiver(mBroadcastReceiver, intentFilter)
     }
 
     val mBroadcastReceiver = object : BroadcastReceiver() {

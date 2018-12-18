@@ -56,7 +56,7 @@ class FavoritesFragment : AbsListFragment() {
     }
 
     override fun initialize() {
-        val inflater = activity.layoutInflater
+        val inflater = activity!!.layoutInflater
         val view = inflater.inflate(R.layout.fragmet_favorites_emptyview, recyclerView, false)
         emptyView = EmptyView(view)
         adapter.adapterDataObserver = emptyView.adapterDataObserver
@@ -71,7 +71,7 @@ class FavoritesFragment : AbsListFragment() {
         super.parseArguments()
         //TODO make this less confusing. if stations is not null, it means that
         // the fragment has been popped from backstack
-        val stations = StationShowingFragment.parseStationsArgument(arguments)
+        val stations = StationShowingFragment.parseStationsArgument(arguments!!)
         if (stations != null) {
             this.stations = stations.toList()
         } else if (!this.stations.isEmpty()) {

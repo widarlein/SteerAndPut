@@ -36,6 +36,7 @@ import se.geecity.android.steerandput.main.MainPresenter
 import se.geecity.android.steerandput.map.MapFragment
 import se.geecity.android.steerandput.stationlist.favorite.FavoritesFragment
 import se.geecity.android.steerandput.stationlist.list.ListFragment
+import java.lang.IllegalStateException
 
 class NavigationManager private constructor(context: Context,
                                             private val fragmentManager: FragmentManager,
@@ -67,7 +68,7 @@ class NavigationManager private constructor(context: Context,
         val fragments = fragmentManager.fragments
         if (fragments.isNotEmpty()) {
             val fragment = fragments.first()
-            val viewIdentifier = ViewIdentifier.valueOf(fragment.tag)
+            val viewIdentifier = viewIdentifierFromTag(fragment.tag)
             mainPresenter.viewActiveFromBackstack(viewIdentifier)
         }
     }
@@ -103,6 +104,13 @@ class NavigationManager private constructor(context: Context,
 
         fragmentManager.addOnBackStackChangedListener(this)
     }
+
+    private fun viewIdentifierFromTag(tag: String?): ViewIdentifier =
+            if (tag != null) {
+                ViewIdentifier.valueOf(tag)
+            } else {
+                throw IllegalStateException("The fragment tag should not be null")
+            }
 
     fun stop() {
         fragmentManager.removeOnBackStackChangedListener(this)
