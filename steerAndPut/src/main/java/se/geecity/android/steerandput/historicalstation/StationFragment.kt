@@ -100,15 +100,15 @@ class StationFragment : StationShowingFragment(), StationView {
         private fun parseLocation(arguments: Bundle): Location? = arguments.getParcelable(ARG_LOCATION)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val root = inflater!!.inflate(R.layout.fragment_station, container, false)
+        val root = inflater.inflate(R.layout.fragment_station, container, false)
 
         stationPresenter.stationView = this
         return root
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         mapView.onCreate(savedInstanceState)
 
@@ -130,7 +130,7 @@ class StationFragment : StationShowingFragment(), StationView {
         val intentFilter = IntentFilter()
         intentFilter.addAction(ACTION_BROADCAST_NEW_LOCATION)
         intentFilter.addAction(ACTION_FINISHED_REFRESHING_STATIONS)
-        LocalBroadcastManager.getInstance(activity).registerReceiver(broadcastReceiver, intentFilter)
+        LocalBroadcastManager.getInstance(activity!!).registerReceiver(broadcastReceiver, intentFilter)
     }
 
     override fun onResume() {
@@ -145,21 +145,19 @@ class StationFragment : StationShowingFragment(), StationView {
 
     override fun onStop() {
         super.onStop()
-        LocalBroadcastManager.getInstance(activity).unregisterReceiver(broadcastReceiver)
+        LocalBroadcastManager.getInstance(activity!!).unregisterReceiver(broadcastReceiver)
     }
 
     private fun parseArguments() {
-        if (arguments != null) {
-            station = parseStation(arguments)
-            location = parseLocation(arguments)
-            stations = checkNotNull(parseStationsArgument(arguments))
+        arguments?.also { args ->
+            station = parseStation(args)
+            location = parseLocation(args)
+            stations = checkNotNull(parseStationsArgument(args))
         }
     }
 
     override fun onStationHistory(history: List<HistoricalStation>) {
-        if (activity == null) {
-            return
-        }
+        val activity = activity ?: return
         val dataEntries = history.map { Entry(it.viewDate.time.toFloat(), it.availableBikes.toFloat()) }
 
         val lineDataSet = LineDataSet(dataEntries, "Available Bikes").apply {
@@ -173,7 +171,7 @@ class StationFragment : StationShowingFragment(), StationView {
     }
 
     override fun navigateToMap(station: Station) {
-        val request = NavigationManager.NavigationRequest(ViewIdentifier.MAP, MapFragment.createArgumentsBundle(stations, parseLocation(arguments), station))
+        val request = NavigationManager.NavigationRequest(ViewIdentifier.MAP, MapFragment.createArgumentsBundle(stations, location, station))
         NavigationManager.instance?.navigate(request)
     }
 
@@ -200,7 +198,7 @@ class StationFragment : StationShowingFragment(), StationView {
 
     private fun setupMap() {
         mapView.getMapAsync { map ->
-            if (hasFineLocationPermission(activity) || hasCoarseLocationPermission(activity)) {
+            if (hasFineLocationPermission(activity!!) || hasCoarseLocationPermission(activity!!)) {
                 map.isMyLocationEnabled = true
             }
 
