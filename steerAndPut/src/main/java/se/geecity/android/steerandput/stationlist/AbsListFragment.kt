@@ -207,10 +207,10 @@ abstract class AbsListFragment : StationShowingFragment() {
         }
 
         override fun onContextMenuFavoriteToggled(station: Station) {
-            if (favoriteUtil.favorites.contains(station)) {
-                favoriteUtil.removeFavorite(station)
+            if (favoriteUtil.favorites.contains(station.id)) {
+                favoriteUtil.removeFavorite(station.id)
             } else {
-                favoriteUtil.addFavorite(station)
+                favoriteUtil.addFavorite(station.id)
             }
             updateList()
         }

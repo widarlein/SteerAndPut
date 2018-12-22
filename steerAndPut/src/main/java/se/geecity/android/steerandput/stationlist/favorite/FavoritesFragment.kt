@@ -90,7 +90,7 @@ class FavoritesFragment : AbsListFragment() {
     override fun updateList() {
         val favorites = favoriteUtil.favorites
         adapter.favorites = favorites
-        adapter.stations = stations.filter { favorites.contains(it) }
+        adapter.stations = stations.filter { favorites.contains(it.id) }
     }
 
     override fun onNetworkError() {
