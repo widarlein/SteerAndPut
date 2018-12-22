@@ -21,14 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput.common.provider
+package se.geecity.android.steerandput.common.persistance
 
+import android.content.Context
+import android.content.SharedPreferences
+import se.geecity.android.steerandput.common.exception.SteerAndPutException
 import se.geecity.android.steerandput.common.model.Station
-import se.geecity.android.steerandput.historicalstation.model.HistoricalStation
-import java.util.Date
 
-interface SelfServiceBicycleServiceProvider {
-    fun fetchStations(success: (stations: List<Station>) -> Unit, failure: (error: String, throwable: Throwable?) -> Unit)
-    fun fetchStationHistory(stationId: Int, from: Date, to: Date, success: (List<HistoricalStation>) -> Unit,
-                            failure: (error: String, throwable: Throwable?) -> Unit)
+const val PREFS_FILENAME = "favorites"
+const val PREFS_KEY = "favorites"
+
+class NewFavoritesUtil(context: Context) {
+
+    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+
+    fun getFavorites(): Set<Int> {
+        val idsString = prefs.getString(PREFS_KEY, "")
+        return idsString.split(",").map { it.toInt() }.toSet()
+    }
+
+    @Throws(SteerAndPutException::class)
+    fun saveFavorites(favoritesIds: Set<Int>) {
+        val idsString = favoritesIds.joinToString(",")
+        val editor = prefs.edit()
+        editor.putString(PREFS_KEY, idsString)
+        editor.apply()
+    }
+
+    fun addFavorite(stationId: Int) {
+        val favorites = getFavorites().toMutableSet()
+        favorites.add(stationId)
+        saveFavorites(favorites)
+    }
+
+    fun removeFavorite(stationId: Int) {
+        val favorites = getFavorites().toMutableSet()
+        favorites.remove(stationId)
+        saveFavorites(favorites)
+    }
 }

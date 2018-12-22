@@ -83,18 +83,16 @@ class NavigationManager private constructor(context: Context,
         fragmentManager.executePendingTransactions()
     }
 
-    private fun setInitialFragment(favorites: List<Station>) {
+    private fun setInitialFragment(favorites: Set<Int>) {
 
         val (fragment, tag) = if (!favorites.isEmpty()) {
-            Pair(
-                    FavoritesFragment.newFragment(null, null),
-                    ViewIdentifier.FAVORITES.toString()
-            )
+
+            FavoritesFragment.newFragment(null, null) to ViewIdentifier.FAVORITES.toString()
+
         } else {
-            Pair(
-                    ListFragment.newFragment(null, null),
-                    ViewIdentifier.LIST.toString()
-            )
+
+            ListFragment.newFragment(null, null) to ViewIdentifier.LIST.toString()
+
         }
 
         val transaction = fragmentManager.beginTransaction()

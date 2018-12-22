@@ -52,7 +52,7 @@ class StationAdapter(context: Context, val stationInteractionListener: StationIn
         notifyDataSetChanged()
         adapterDataObserver?.onStations(value)
     }
-    var favorites: MutableList<Station> = mutableListOf()
+    var favorites: Set<Int> = setOf()
     var location: Location? = null
         set(value) {
             field = value
@@ -78,7 +78,7 @@ class StationAdapter(context: Context, val stationInteractionListener: StationIn
         holder.bikes.text = station.availableBikes.toString()
         holder.stands.text = station.availableBikeStands.toString()
 
-        if (favorites.contains(station)) {
+        if (favorites.contains(station.id)) {
             holder.star.visibility = View.VISIBLE
         } else {
             holder.star.visibility = View.GONE

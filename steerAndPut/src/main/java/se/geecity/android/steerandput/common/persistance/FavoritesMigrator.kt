@@ -21,40 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput.common.persistance;
+package se.geecity.android.steerandput.common.persistance
 
-import android.content.Context;
+import android.content.Context
 
-import java.util.List;
-import java.util.Set;
+class FavoritesMigrator(private val context: Context, private val oldFavoriteUtil: OldFavoriteUtil, private val newFavoritesUtil: NewFavoritesUtil) {
 
-import se.geecity.android.steerandput.common.exception.SteerAndPutException;
-import se.geecity.android.steerandput.common.model.Station;
-
-public class FavoriteUtil {
-
-    private static String TAG = FavoriteUtil.class.getSimpleName();
-
-    private final NewFavoritesUtil mNewFavoritesUtil;
-
-    public FavoriteUtil(Context context) {
-        OldFavoriteUtil oldFavoriteUtil = new OldFavoriteUtil(context);
-        mNewFavoritesUtil = new NewFavoritesUtil(context);
-        FavoritesMigrator favoritesMigrator = new FavoritesMigrator(context, oldFavoriteUtil, mNewFavoritesUtil);
-        favoritesMigrator.migrateIfPossible();
+    fun migrateIfPossible() {
+        if (favoritesFileExists()) {
+            val favorites = oldFavoriteUtil.favorites
+            newFavoritesUtil.saveFavorites(favorites.map { it.id }.toSet())
+            deleteOldFavoritesFile()
+        }
     }
 
+    fun favoritesFileExists() = context.fileList().any { it == OldFavoriteUtil.FILENAME }
 
-    public Set<Integer> getFavorites() {
-        return mNewFavoritesUtil.getFavorites();
+    private fun deleteOldFavoritesFile() {
+        context.deleteFile(OldFavoriteUtil.FILENAME)
     }
-
-    public void addFavorite(int stationId) {
-        mNewFavoritesUtil.addFavorite(stationId);
-    }
-
-    public void removeFavorite(int stationId) {
-        mNewFavoritesUtil.removeFavorite(stationId);
-    }
-
 }
