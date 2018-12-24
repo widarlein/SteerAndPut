@@ -23,12 +23,12 @@
  */
 package se.geecity.android.steerandput.historicalstation.di
 
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import se.geecity.android.steerandput.historicalstation.StationPresenter
 import se.geecity.android.steerandput.historicalstation.interactor.StationInteractor
 import se.geecity.android.steerandput.historicalstation.interactor.StationInteractorImpl
 
-val stationModule = applicationContext {
-    provide(isSingleton = false) { StationInteractorImpl(get()) } bind StationInteractor::class
+val stationModule = module {
+    single { StationInteractorImpl(get()) } bind StationInteractor::class
     factory { StationPresenter(get()) }
 }
