@@ -37,6 +37,10 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
 }
 
 license {
@@ -59,6 +63,12 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.11.0'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'org.koin:koin-android:1.0.2'
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'androidx.test:core:1.1.0'
+    testImplementation 'org.mockito:mockito-core:2.21.0'
+    testImplementation "com.google.truth:truth:0.42"
+    testImplementation 'org.robolectric:robolectric:4.1'
 }
 repositories {
     mavenCentral()
