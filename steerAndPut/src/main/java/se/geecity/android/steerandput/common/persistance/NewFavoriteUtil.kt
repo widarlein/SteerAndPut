@@ -28,24 +28,26 @@ import android.content.SharedPreferences
 import se.geecity.android.steerandput.common.exception.SteerAndPutException
 import se.geecity.android.steerandput.common.model.Station
 
-const val PREFS_FILENAME = "favorites"
-const val PREFS_KEY = "favorites"
+internal const val PREFS_FILENAME = "favorites"
+internal const val PREFS_KEY = "favorites"
 
 class NewFavoritesUtil(context: Context) {
 
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
 
     fun getFavorites(): Set<Int> {
-        val idsString = prefs.getString(PREFS_KEY, "")
-        return idsString.split(",").map { it.toInt() }.toSet()
+        val idsString = prefs.getString(PREFS_KEY, null)
+        return idsString?.split(",")?.map { it.toInt() }?.toSet() ?: setOf()
     }
 
     @Throws(SteerAndPutException::class)
     fun saveFavorites(favoritesIds: Set<Int>) {
-        val idsString = favoritesIds.joinToString(",")
-        val editor = prefs.edit()
-        editor.putString(PREFS_KEY, idsString)
-        editor.apply()
+        if (favoritesIds.isNotEmpty()) {
+            val idsString = favoritesIds.joinToString(",")
+            val editor = prefs.edit()
+            editor.putString(PREFS_KEY, idsString)
+            editor.apply()
+        }
     }
 
     fun addFavorite(stationId: Int) {
