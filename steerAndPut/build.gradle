@@ -31,7 +31,7 @@ android {
         }
 
         buildTypes.each {
-            it.buildConfigField 'String', 'BICYCLESERVICE_API_KEY', '"$BICYCLESERVICE_API_KEY"'
+            it.buildConfigField 'String', 'BICYCLESERVICE_API_KEY', /"${this.properties['BICYCLESERVICE_API_KEY']}"/
         }
     }
     sourceSets {
