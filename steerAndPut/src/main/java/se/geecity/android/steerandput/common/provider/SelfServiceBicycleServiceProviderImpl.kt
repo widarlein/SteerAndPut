@@ -53,7 +53,7 @@ import java.util.Date
 class SelfServiceBicycleServiceProviderImpl(private val apiKey: String) : SelfServiceBicycleServiceProvider {
 
     companion object {
-        private val URL_TEMPLATE = "http://data.goteborg.se/SelfServiceBicycleService/v1.0/Stations/%s?format=json"
+        private val URL_TEMPLATE = "https://data.goteborg.se/SelfServiceBicycleService/v1.0/Stations/%s?format=json"
     }
 
     private val url = String.format(URL_TEMPLATE, apiKey)
