@@ -23,7 +23,8 @@
  */
 package se.geecity.android.steerandput.historicalstation.di
 
-import org.koin.dsl.module.module
+import org.koin.dsl.bind
+import org.koin.dsl.module
 import se.geecity.android.steerandput.historicalstation.StationPresenter
 import se.geecity.android.steerandput.historicalstation.interactor.StationInteractor
 import se.geecity.android.steerandput.historicalstation.interactor.StationInteractorImpl

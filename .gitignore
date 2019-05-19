@@ -32,6 +32,8 @@ Thumbs.db
 .gradle
 build/
 
+# Firebase
+google-services.json
 
 /*/out
 /*/*/build
