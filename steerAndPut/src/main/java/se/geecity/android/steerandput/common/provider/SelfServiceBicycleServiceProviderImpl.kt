@@ -123,7 +123,7 @@ class SelfServiceBicycleServiceProviderImpl(private val apiKey: String) : SelfSe
     }
 
     private fun buildHistoricalStationUrl(stationId: Int, from: Date, to: Date): String = buildString {
-        append("http://data.goteborg.se/SelfServiceBicycleService/v1.0/HistoricalData/")
+        append("https://data.goteborg.se/SelfServiceBicycleService/v1.0/HistoricalData/")
         append(apiKey) //TODO Change to injected variable
         append("/")
         append(stationId)
