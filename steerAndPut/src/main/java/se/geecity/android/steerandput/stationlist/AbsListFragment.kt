@@ -32,12 +32,12 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.fragment_list.*
+import org.koin.android.ext.android.inject
 import se.geecity.android.steerandput.NavigationManager
 import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.constants.ACTION_BROADCAST_NEW_LOCATION
@@ -47,6 +47,7 @@ import se.geecity.android.steerandput.common.constants.ACTION_REFRESHING_STATION
 import se.geecity.android.steerandput.common.constants.ACTION_REQUEST_REFRESH_STATIONS
 import se.geecity.android.steerandput.common.constants.EXTRA_BROADCAST_LOCATION
 import se.geecity.android.steerandput.common.constants.EXTRA_BROADCAST_STATIONS
+import se.geecity.android.steerandput.common.logging.FirebaseLogger
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
 import se.geecity.android.steerandput.common.view.StationShowingFragment
@@ -69,6 +70,8 @@ abstract class AbsListFragment : StationShowingFragment() {
     protected lateinit var localBroadcastManager: LocalBroadcastManager
     protected lateinit var adapter: StationAdapter
     protected lateinit var favoriteUtil: FavoriteUtil
+
+    private val firebaseLogger: FirebaseLogger by inject()
 
     private var location: Location? = null
 
@@ -134,7 +137,7 @@ abstract class AbsListFragment : StationShowingFragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-//        outState.putParcelableArray(STATE_EXTRA_STATIONS, stations)
+        //TODO (widar): break out to helper class and add error handling if 0 stations. Seems to cause ClassCastException on some devices.
         outState.putParcelableArrayList(STATE_EXTRA_STATIONS, stations as ArrayList<out Parcelable>)
     }
 
@@ -197,6 +200,7 @@ abstract class AbsListFragment : StationShowingFragment() {
 
     private val stationInteractionListener = object : StationAdapter.StationInteractionListener {
         override fun onStationClicked(station: Station) {
+            firebaseLogger.stationListItemClicked(station)
             val request = NavigationManager.NavigationRequest(ViewIdentifier.MAP, MapFragment.createArgumentsBundle(stations, location, station))
             NavigationManager.instance?.navigate(request)
         }

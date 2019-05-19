@@ -6,7 +6,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "com.jaredsburrows.license"
 
-
 preBuild.doFirst {
     if (file("google-services.json").exists()) {
         apply plugin: 'com.google.gms.google-services'
@@ -15,7 +14,6 @@ preBuild.doFirst {
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "26.0.3"
 
     defaultConfig {
         applicationId "se.geecity.android.steerandput"
