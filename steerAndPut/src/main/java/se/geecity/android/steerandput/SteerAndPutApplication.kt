@@ -24,10 +24,10 @@
 package se.geecity.android.steerandput
 
 import android.app.Application
-import org.koin.android.ext.android.setProperty
-import org.koin.android.ext.android.startKoin
-import org.koin.standalone.StandAloneContext.stopKoin
-import se.geecity.android.steerandput.common.constants.BICYCLESERVICE_API_KEY_PROPERTY
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import se.geecity.android.steerandput.historicalstation.di.stationModule
 import se.geecity.android.steerandput.main.di.mainModule
 
@@ -38,16 +38,15 @@ class SteerAndPutApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        startKoin(this, listOf(mainModule, stationModule))
-        initKoinProperties()
+        startKoin {
+            androidLogger()
+            androidContext(this@SteerAndPutApplication)
+            modules(mainModule, stationModule)
+        }
     }
 
     override fun onTerminate() {
         super.onTerminate()
         stopKoin()
-    }
-
-    private fun initKoinProperties() {
-        setProperty(BICYCLESERVICE_API_KEY_PROPERTY, BuildConfig.BICYCLESERVICE_API_KEY)
     }
 }

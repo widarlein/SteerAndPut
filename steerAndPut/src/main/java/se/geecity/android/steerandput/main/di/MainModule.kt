@@ -23,8 +23,13 @@
  */
 package se.geecity.android.steerandput.main.di
 
-import org.koin.dsl.module.module
+import com.google.firebase.analytics.FirebaseAnalytics
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+import se.geecity.android.steerandput.BuildConfig
 import se.geecity.android.steerandput.common.constants.BICYCLESERVICE_API_KEY_PROPERTY
+import se.geecity.android.steerandput.common.logging.FirebaseLogger
 import se.geecity.android.steerandput.common.provider.SelfServiceBicycleServiceProvider
 import se.geecity.android.steerandput.common.provider.SelfServiceBicycleServiceProviderImpl
 import se.geecity.android.steerandput.main.MainPresenter
@@ -32,7 +37,11 @@ import se.geecity.android.steerandput.main.interactor.StationsInteractor
 import se.geecity.android.steerandput.main.interactor.StationsInteractorImpl
 
 val mainModule = module {
-    single<SelfServiceBicycleServiceProvider> { SelfServiceBicycleServiceProviderImpl(getProperty(BICYCLESERVICE_API_KEY_PROPERTY, "")) }
+    single(named(BICYCLESERVICE_API_KEY_PROPERTY)) { BuildConfig.BICYCLESERVICE_API_KEY }
+    single<SelfServiceBicycleServiceProvider> { SelfServiceBicycleServiceProviderImpl(get(named(BICYCLESERVICE_API_KEY_PROPERTY))) }
     factory<StationsInteractor> { StationsInteractorImpl(get()) }
     factory { MainPresenter(get()) }
+
+    factory { FirebaseAnalytics.getInstance(androidContext()) }
+    single { FirebaseLogger(get()) }
 }
