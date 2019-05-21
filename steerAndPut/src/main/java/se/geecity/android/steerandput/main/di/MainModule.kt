@@ -43,5 +43,5 @@ val mainModule = module {
     factory { MainPresenter(get()) }
 
     factory { FirebaseAnalytics.getInstance(androidContext()) }
-    single { FirebaseLogger(get()) }
+    single { FirebaseLogger(get(), androidContext()) }
 }

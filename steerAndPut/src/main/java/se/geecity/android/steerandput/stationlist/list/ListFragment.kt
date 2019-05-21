@@ -25,11 +25,17 @@ package se.geecity.android.steerandput.stationlist.list
 
 import android.location.Location
 import android.os.Bundle
+import android.view.View
+import org.koin.android.ext.android.inject
+import se.geecity.android.steerandput.common.logging.FirebaseLogger
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.view.StationShowingFragment
+import se.geecity.android.steerandput.common.view.ViewIdentifier
 import se.geecity.android.steerandput.stationlist.AbsListFragment
 
 class ListFragment : AbsListFragment() {
+
+    private val firebaseLogger: FirebaseLogger by inject()
 
     override var stations: List<Station> = mutableListOf()
     set(value) {
@@ -43,6 +49,11 @@ class ListFragment : AbsListFragment() {
 
         fun newFragment(stations: List<Station>?, location: Location?): ListFragment =
                 ListFragment().apply { arguments = createArgumentsBundle(stations, location) }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        firebaseLogger.pageView(ViewIdentifier.LIST)
     }
 
     override fun onStart() {

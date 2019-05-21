@@ -53,8 +53,14 @@ license {
     strictCheck true
     mapping('java', 'SLASHSTAR_STYLE')
     mapping('kt', 'SLASHSTAR_STYLE') // Does not actually work. See ../applyLicenseHeaderToKotlinFiles.groovy
-    ext.year = '2018'
+    ext.year = '2019'
     ext.name = 'Alexander Widar'
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleDebug') {
+        task.dependsOn 'licenseFormat'
+    }
 }
 
 dependencies {

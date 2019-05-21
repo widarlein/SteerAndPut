@@ -195,6 +195,7 @@ abstract class AbsListFragment : StationShowingFragment() {
     private val onRefreshListener = object : SwipeRefreshLayout.OnRefreshListener {
         override fun onRefresh() {
             requestStations()
+            firebaseLogger.swipeRefreshReleased()
         }
     }
 
@@ -206,6 +207,7 @@ abstract class AbsListFragment : StationShowingFragment() {
         }
 
         override fun onContextMenuDetailsClicked(station: Station) {
+            firebaseLogger.stationListItemDetailsClicked(station)
             val request = NavigationManager.NavigationRequest(ViewIdentifier.STATION, StationFragment.createArgumentBundle(stations, station, location))
             NavigationManager.instance?.navigate(request)
         }
@@ -213,8 +215,10 @@ abstract class AbsListFragment : StationShowingFragment() {
         override fun onContextMenuFavoriteToggled(station: Station) {
             if (favoriteUtil.favorites.contains(station.id)) {
                 favoriteUtil.removeFavorite(station.id)
+                firebaseLogger.removeFavoriteStation(station, "context-menu")
             } else {
                 favoriteUtil.addFavorite(station.id)
+                firebaseLogger.addFavoriteStation(station, "context-menu")
             }
             updateList()
         }
