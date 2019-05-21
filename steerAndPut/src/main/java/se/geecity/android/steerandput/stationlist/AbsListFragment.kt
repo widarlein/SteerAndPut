@@ -73,6 +73,7 @@ abstract class AbsListFragment : StationShowingFragment() {
 
     private val firebaseLogger: FirebaseLogger by inject()
 
+    override var stations: List<Station> = listOf()
     private var location: Location? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
