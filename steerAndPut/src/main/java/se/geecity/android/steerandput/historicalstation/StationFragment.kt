@@ -30,7 +30,6 @@ import android.content.IntentFilter
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,6 +50,7 @@ import se.geecity.android.steerandput.common.constants.ACTION_BROADCAST_NEW_LOCA
 import se.geecity.android.steerandput.common.constants.ACTION_FINISHED_REFRESHING_STATIONS
 import se.geecity.android.steerandput.common.constants.EXTRA_BROADCAST_LOCATION
 import se.geecity.android.steerandput.common.constants.EXTRA_BROADCAST_STATIONS
+import se.geecity.android.steerandput.common.logging.FirebaseLogger
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.util.getDistanceBetweenAsString
 import se.geecity.android.steerandput.common.util.hasCoarseLocationPermission
@@ -85,6 +85,8 @@ class StationFragment : StationShowingFragment(), StationView {
             return dateFormatter.format(Date(value.toLong()))
         }
     }
+
+    private val firebaseLogger: FirebaseLogger by inject()
 
     companion object {
         private val ARG_STATION = "station"
@@ -123,6 +125,7 @@ class StationFragment : StationShowingFragment(), StationView {
 
         stationPresenter.stationId = station.id
         stationPresenter.onViewCreated()
+        firebaseLogger.pageView(ViewIdentifier.STATION, station)
     }
 
     override fun onStart() {
@@ -215,7 +218,10 @@ class StationFragment : StationShowingFragment(), StationView {
             val markerOptions = MarkerOptions().position(pos)
             map.addMarker(markerOptions)
 
-            map.setOnMapClickListener { stationPresenter.mapClick(station) }
+            map.setOnMapClickListener {
+                stationPresenter.mapClick(station)
+                firebaseLogger.mapClicked(station)
+            }
         }
     }
 

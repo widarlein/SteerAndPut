@@ -43,7 +43,8 @@ import java.util.Comparator
 /**
  * Adapter for showing stations in a RecyclerView
  */
-class StationAdapter(context: Context, val stationInteractionListener: StationInteractionListener) : RecyclerView.Adapter<StationAdapter.ViewHolder>() {
+class StationAdapter(context: Context,
+                     private val stationInteractionListener: StationInteractionListener) : RecyclerView.Adapter<StationAdapter.ViewHolder>() {
 
     var stations: List<Station> = mutableListOf()
     set(value) {

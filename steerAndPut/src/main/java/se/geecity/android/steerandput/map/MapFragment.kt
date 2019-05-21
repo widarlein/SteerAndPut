@@ -40,12 +40,15 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
+import org.koin.android.ext.android.inject
 import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.constants.ACTION_FINISHED_REFRESHING_STATIONS
 import se.geecity.android.steerandput.common.constants.EXTRA_BROADCAST_STATIONS
+import se.geecity.android.steerandput.common.logging.FirebaseLogger
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.util.hasFineLocationPermission
 import se.geecity.android.steerandput.common.view.StationShowingFragment
+import se.geecity.android.steerandput.common.view.ViewIdentifier
 
 /**
  * Fragment for the map view, showing stations on a map
@@ -56,6 +59,8 @@ class MapFragment : StationShowingFragment() {
     private lateinit var map: GoogleMap
     private var location: Location? = null
     private var focusStation: Station? = null
+
+    private val firebaseLogger: FirebaseLogger by inject()
 
     companion object {
         fun createArgumentsBundle(stations: List<Station>, location: Location?, focusStation: Station? = null): Bundle {
@@ -72,6 +77,7 @@ class MapFragment : StationShowingFragment() {
         mapView.onCreate(savedInstanceState)
         parseArguments()
         initMap()
+        firebaseLogger.pageView(ViewIdentifier.MAP)
     }
 
     fun parseArguments() {

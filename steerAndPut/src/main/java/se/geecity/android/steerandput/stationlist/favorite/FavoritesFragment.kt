@@ -27,9 +27,12 @@ import android.location.Location
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_list.*
+import org.koin.android.ext.android.inject
 import se.geecity.android.steerandput.R
+import se.geecity.android.steerandput.common.logging.FirebaseLogger
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.view.StationShowingFragment
+import se.geecity.android.steerandput.common.view.ViewIdentifier
 import se.geecity.android.steerandput.stationlist.AbsListFragment
 
 /**
@@ -44,6 +47,7 @@ class FavoritesFragment : AbsListFragment() {
     }
 
     private lateinit var emptyView: EmptyView
+    private val firebaseLogger: FirebaseLogger by inject()
 
     companion object {
         fun createArgumentsBundle(stations: List<Station>?, location: Location?): Bundle {
@@ -77,6 +81,11 @@ class FavoritesFragment : AbsListFragment() {
         } else if (!this.stations.isEmpty()) {
             updateList()
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        firebaseLogger.pageView(ViewIdentifier.FAVORITES)
     }
 
     override fun onStart() {

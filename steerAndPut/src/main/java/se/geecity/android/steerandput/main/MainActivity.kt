@@ -59,6 +59,7 @@ import se.geecity.android.steerandput.common.constants.EXTRA_ERROR_MESSAGE
 import se.geecity.android.steerandput.common.constants.TAB_FAVORITES
 import se.geecity.android.steerandput.common.constants.TAB_LIST
 import se.geecity.android.steerandput.common.constants.TAB_MAP
+import se.geecity.android.steerandput.common.logging.FirebaseLogger
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
 import se.geecity.android.steerandput.common.util.hasFineLocationPermission
@@ -90,6 +91,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var favoriteUtil: FavoriteUtil
 
     private val mainPresenter: MainPresenter by inject()
+    private val firebaseLogger: FirebaseLogger by inject()
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -150,6 +152,7 @@ class MainActivity : AppCompatActivity(),
                 .setIcon(R.drawable.ic_refresh)
                 .setOnMenuItemClickListener {
                     refreshStations()
+                    firebaseLogger.refreshButtonClicked()
                     true
                 }
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
