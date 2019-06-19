@@ -64,22 +64,22 @@ tasks.whenTaskAdded { task ->
 }
 
 dependencies {
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'com.google.android.material:material:1.0.0-beta01'
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'com.google.android.material:material:1.1.0-alpha07'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.3'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'org.koin:koin-android:2.0.0-GA4'
-    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-core:17.0.0'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'androidx.test:core:1.1.0'
+    testImplementation 'androidx.test:core:1.2.0'
     testImplementation 'org.mockito:mockito-core:2.21.0'
-    testImplementation "com.google.truth:truth:0.42"
+    testImplementation "com.google.truth:truth:0.44"
     testImplementation 'org.robolectric:robolectric:4.1'
 }
 repositories {
