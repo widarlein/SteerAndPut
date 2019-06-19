@@ -3,7 +3,7 @@
 
     MIT License
 
-    Copyright (c) 2018 Alexander Widar
+    Copyright (c) 2019 Alexander Widar
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
     SOFTWARE.
 
 -->
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -63,4 +63,4 @@
 
 
     </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>

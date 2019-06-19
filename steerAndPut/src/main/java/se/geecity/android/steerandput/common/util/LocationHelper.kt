@@ -27,7 +27,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import se.geecity.android.steerandput.common.model.Station
 import java.text.DecimalFormat
 

@@ -30,8 +30,8 @@ import android.content.IntentFilter
 import android.location.Location
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.widget.SwipeRefreshLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

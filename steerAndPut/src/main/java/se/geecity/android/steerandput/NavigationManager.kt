@@ -25,7 +25,7 @@ package se.geecity.android.steerandput
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.FragmentManager
 import android.util.Log
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil

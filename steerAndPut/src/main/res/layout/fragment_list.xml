@@ -3,7 +3,7 @@
 
     MIT License
 
-    Copyright (c) 2018 Alexander Widar
+    Copyright (c) 2019 Alexander Widar
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -29,20 +29,20 @@
     android:id="@+id/list_listcontainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/listSwipeRefreshLayout"
         style="@style/ContentFramesContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:scrollbarStyle="outsideOverlay"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>
