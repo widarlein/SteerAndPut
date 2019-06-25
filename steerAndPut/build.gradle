@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.hierynomus.license" version "0.14.0"
+    id "com.github.hierynomus.license" version "0.15.0"
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -52,7 +52,7 @@ license {
     header rootProject.file('mit.header')
     strictCheck true
     mapping('java', 'SLASHSTAR_STYLE')
-    mapping('kt', 'SLASHSTAR_STYLE') // Does not actually work. See ../applyLicenseHeaderToKotlinFiles.groovy
+    mapping('kt', 'SLASHSTAR_STYLE')
     ext.year = '2019'
     ext.name = 'Alexander Widar'
 }
@@ -62,6 +62,11 @@ tasks.whenTaskAdded { task ->
         task.dependsOn 'licenseFormat'
     }
 }
+
+task licenseFormatForKotlin(type: com.hierynomus.gradle.license.tasks.LicenseFormat) {
+    source = fileTree(dir: "src/main/java").include("**/*.kt")
+}
+licenseFormat.dependsOn licenseFormatForKotlin
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
