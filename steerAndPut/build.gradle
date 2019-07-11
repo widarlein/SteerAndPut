@@ -20,6 +20,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         manifestPlaceholders = [mapsApiKey: MAPS_API_KEY]
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -80,6 +81,8 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'org.koin:koin-android:2.0.0-GA4'
     implementation 'com.google.firebase:firebase-core:17.0.0'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:18.0.1'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'androidx.test:core:1.2.0'
