@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.hierynomus.license" version "0.14.0"
+    id "com.github.hierynomus.license" version "0.15.0"
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -17,9 +17,10 @@ android {
 
     defaultConfig {
         applicationId "se.geecity.android.steerandput"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 28
         manifestPlaceholders = [mapsApiKey: MAPS_API_KEY]
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -52,7 +53,7 @@ license {
     header rootProject.file('mit.header')
     strictCheck true
     mapping('java', 'SLASHSTAR_STYLE')
-    mapping('kt', 'SLASHSTAR_STYLE') // Does not actually work. See ../applyLicenseHeaderToKotlinFiles.groovy
+    mapping('kt', 'SLASHSTAR_STYLE')
     ext.year = '2019'
     ext.name = 'Alexander Widar'
 }
@@ -63,23 +64,30 @@ tasks.whenTaskAdded { task ->
     }
 }
 
+task licenseFormatForKotlin(type: com.hierynomus.gradle.license.tasks.LicenseFormat) {
+    source = fileTree(dir: "src/main/java").include("**/*.kt")
+}
+licenseFormat.dependsOn licenseFormatForKotlin
+
 dependencies {
-    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'com.google.android.material:material:1.1.0-alpha07'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.3'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'org.koin:koin-android:2.0.0-GA4'
-    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-core:17.0.0'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:18.0.1'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'androidx.test:core:1.1.0'
+    testImplementation 'androidx.test:core:1.2.0'
     testImplementation 'org.mockito:mockito-core:2.21.0'
-    testImplementation "com.google.truth:truth:0.42"
+    testImplementation "com.google.truth:truth:0.44"
     testImplementation 'org.robolectric:robolectric:4.1'
 }
 repositories {
