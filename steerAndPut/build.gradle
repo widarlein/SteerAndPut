@@ -47,6 +47,10 @@ android {
     testOptions {
         unitTests.includeAndroidResources = true
     }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 license {
@@ -75,18 +79,21 @@ dependencies {
     implementation project(":data")
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
+
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'com.google.android.material:material:1.1.0-alpha07'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.squareup.okhttp3:okhttp:3.12.3'
+
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
-    implementation 'org.koin:koin-android:2.0.0-GA4'
+    implementation 'org.koin:koin-android-viewmodel:2.0.0-GA2'
     implementation 'com.google.firebase:firebase-core:17.0.0'
     implementation 'com.google.firebase:firebase-inappmessaging-display:18.0.1'
     implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'androidx.test:core:1.2.0'
