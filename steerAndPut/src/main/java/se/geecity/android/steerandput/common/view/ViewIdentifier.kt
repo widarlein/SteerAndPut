@@ -27,5 +27,6 @@ enum class ViewIdentifier {
     LIST,
     FAVORITES,
     MAP,
-    STATION
+    STATION,
+    NEARBY
 }
