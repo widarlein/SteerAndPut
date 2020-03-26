@@ -23,7 +23,6 @@
  */
 package se.geecity.android.steerandput.common.provider
 
-import android.util.Log
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -31,11 +30,10 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import com.squareup.okhttp.Callback
+import com.squareup.okhttp.OkHttpClient
+import com.squareup.okhttp.Request
+import com.squareup.okhttp.Response
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.historicalstation.model.HistoricalStation
 import java.io.IOException
@@ -83,11 +81,11 @@ class SelfServiceBicycleServiceProviderImpl(private val apiKey: String) : SelfSe
         val request = Request.Builder().url(url).build()
 
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException?) {
+            override fun onFailure(request: Request?, e: IOException?) {
                 failure(e.toString(), e)
             }
 
-            override fun onResponse(call: Call, response: Response) {
+            override fun onResponse(response: Response) {
                 if (response.isSuccessful) {
                     //TODO JsonSyntaxException (on wifis redirecting you to login page, eg)
                     val stations: List<Station> = gson.fromJson(response.body()!!.string(), stationListTypeToken.type)
@@ -107,11 +105,11 @@ class SelfServiceBicycleServiceProviderImpl(private val apiKey: String) : SelfSe
         val request = Request.Builder().url(url).build()
 
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call?, e: IOException?) {
+            override fun onFailure(request: Request?, e: IOException?) {
                 failure(e?.message!!, e)
             }
 
-            override fun onResponse(call: Call, response: Response) {
+            override fun onResponse(response: Response) {
                 if (response.isSuccessful) {
                     val historicalStations: List<HistoricalStation> = gson.fromJson(response.body()!!.string(), historicalStationListTypeToken.type)
                     success(historicalStations)
