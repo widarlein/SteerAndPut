@@ -135,6 +135,13 @@ class MainActivity : AppCompatActivity(),
 
         googleApiClient.connect()
         refreshStations()
+
+        // Bad practice, I know. The beauty of open source is that i you can complain, you can fix it
+        if (!hasFineLocationPermission(applicationContext)) {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    FINE_LOCATION_PERMISSION_REQUEST)
+        }
     }
 
     override fun onStop() {
@@ -209,11 +216,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onConnected(connectionHint: Bundle?) {
-        if (!hasFineLocationPermission(applicationContext)) {
-            ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    FINE_LOCATION_PERMISSION_REQUEST)
-        } else {
+        if (hasFineLocationPermission(applicationContext)) {
             startLocationUpdates()
         }
     }
