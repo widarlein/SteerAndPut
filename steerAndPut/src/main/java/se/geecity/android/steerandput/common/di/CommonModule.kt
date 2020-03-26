@@ -23,6 +23,8 @@
  */
 package se.geecity.android.steerandput.common.di
 
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -37,6 +39,7 @@ import se.geecity.android.steerandput.common.persistance.FavoriteUtil
 val commonModule = module {
 
     single { FavoriteUtil(androidContext()) }
+    single<FusedLocationProviderClient> { LocationServices.getFusedLocationProviderClient(androidContext()) }
 
     factory { StationAdapterV2(androidContext(), get()) }
     factory<StationInteractionListener> { StationInteractionListenerImpl(get(), get()) }

@@ -38,6 +38,7 @@ import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.adapter.StationAdapterV2
 import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
 import se.geecity.android.steerandput.common.model.Station
+import se.geecity.android.steerandput.common.util.hasFineLocationPermission
 import se.geecity.android.steerandput.common.view.StationShowingFragment
 import se.geecity.android.steerandput.common.view.ViewIdentifier
 
@@ -70,6 +71,11 @@ class NearbyFragment() : StationShowingFragment() {
                     adapter.stations = stationObjectsResource.body
                 }
                 is Failure -> {}
+            }
+        }
+        if (hasFineLocationPermission(requireContext())) {
+            nearbyViewModel.locationLiveData.observe(this) { location ->
+                adapter.location = location
             }
         }
     }
