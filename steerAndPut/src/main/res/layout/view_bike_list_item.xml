@@ -29,72 +29,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/ContentFrame"
-    android:padding="8dp"
     android:layout_marginTop="8dp"
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground"
     >
-
-
-    <TextView
-        android:id="@+id/station_item_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NAME"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/station_item_bikes_img"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="8dp"
         android:src="@drawable/ic_launcher"
-        app:layout_constraintStart_toStartOf="@+id/station_item_label"
-        app:layout_constraintTop_toBottomOf="@+id/station_item_label" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/stationBikeText"
+        android:id="@+id/station_item_label"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="@+id/station_item_bikes_img"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/station_item_bikes_img"
-        app:layout_constraintTop_toTopOf="@+id/station_item_bikes_img"
-        tools:text="0" />
-
-    <ImageView
-        android:id="@+id/station_item_stand_img"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="24dp"
-        android:src="@drawable/p_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/station_item_bikes_img"
-        app:layout_constraintStart_toEndOf="@+id/stationBikeText"
-        app:layout_constraintTop_toTopOf="@+id/station_item_bikes_img" />
-
-    <TextView
-        android:id="@+id/stationStandsText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="@+id/station_item_stand_img"
-        app:layout_constraintStart_toEndOf="@+id/station_item_stand_img"
-        app:layout_constraintTop_toTopOf="@+id/station_item_stand_img"
-        tools:text="0" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="NAME" />
 
     <TextView
         android:id="@+id/station_item_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        tools:text="100 m"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/station_item_bikes_img"
-        app:layout_constraintTop_toBottomOf="@+id/station_item_bikes_img" />
+        app:layout_constraintTop_toBottomOf="@+id/station_item_bikes_img"
+        tools:text="100 m" />
 
     <ImageView
         android:id="@+id/station_item_star"
