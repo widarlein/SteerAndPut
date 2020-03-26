@@ -28,12 +28,20 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.core.content.ContextCompat
+import se.geecity.android.domain.entities.StationObject
 import se.geecity.android.steerandput.common.model.Station
 import java.text.DecimalFormat
 
 private val decimalFormat: DecimalFormat = DecimalFormat("##.00")
 
 fun getDistanceBetweenAsString(station: Station, otherLocation: Location): String {
+    val result = FloatArray(1)
+    Location.distanceBetween(station.lat, station.longitude, otherLocation.latitude, otherLocation.longitude, result)
+
+    return getDistanceString(result[0])
+}
+
+fun getDistanceBetweenAsString(station: StationObject, otherLocation: Location): String {
     val result = FloatArray(1)
     Location.distanceBetween(station.lat, station.longitude, otherLocation.latitude, otherLocation.longitude, result)
 
