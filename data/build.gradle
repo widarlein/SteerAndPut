@@ -27,6 +27,12 @@ android {
     }
 }
 
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleDebug') {
+        task.dependsOn 'licenseFormat'
+    }
+}
+
 license {
     header rootProject.file('mit.header')
     strictCheck true
