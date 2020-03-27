@@ -36,6 +36,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.view_station_list_item.view.*
 import se.geecity.android.domain.entities.StationObject
 import se.geecity.android.steerandput.R
+import se.geecity.android.steerandput.common.persistance.FavoriteUtil
 import se.geecity.android.steerandput.common.util.getDistanceBetweenAsString
 import java.util.Collections
 import java.util.Comparator
@@ -44,15 +45,16 @@ import java.util.Comparator
  * Adapter for showing stations in a RecyclerView
  */
 class StationAdapterV2(context: Context,
-                       private val stationInteractionListener: StationInteractionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                       private val stationInteractionListener: StationInteractionListener,
+                       private val favoriteUtil: FavoriteUtil) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var stations: List<StationObject> = mutableListOf()
-    set(value) {
-        field = value
-        sortStations()
-        notifyDataSetChanged()
-        adapterDataObserver?.onStations(value)
-    }
+        set(value) {
+            field = value
+            sortStations()
+            notifyDataSetChanged()
+            adapterDataObserver?.onStations(value)
+        }
     var favorites: Set<Int> = setOf()
     var location: Location? = null
         set(value) {
@@ -104,7 +106,7 @@ class StationAdapterV2(context: Context,
         holder.bikes.text = stationObject.availableBikes.toString()
         holder.stands.text = stationObject.availableBikeStands.toString()
 
-        if (favorites.contains(stationObject.id)) {
+        if (favoriteUtil.isFavorite(stationObject.id)) {
             holder.star.visibility = View.VISIBLE
         } else {
             holder.star.visibility = View.GONE
@@ -134,7 +136,7 @@ class StationAdapterV2(context: Context,
     private fun bindBike(holder: BikeViewHolder, stationObject: StationObject) {
         holder.label.text = stationObject.name
 
-        if (favorites.contains(stationObject.id)) {
+        if (favoriteUtil.isFavorite(stationObject.id)) {
             holder.star.visibility = View.VISIBLE
         } else {
             holder.star.visibility = View.GONE
@@ -175,6 +177,7 @@ class StationAdapterV2(context: Context,
         init {
             view.setOnCreateContextMenuListener(this)
         }
+
         val label: TextView = view.station_item_label
         val bikes: TextView = view.stationBikeText
         val stands: TextView = view.stationStandsText
@@ -188,7 +191,7 @@ class StationAdapterV2(context: Context,
             }
             val toggleFavoriteItemTitleRes = if (star.visibility == View.VISIBLE)
                 R.string.station_list_fragment_context_remove_favorite
-                else R.string.station_list_fragment_context_add_favorite
+            else R.string.station_list_fragment_context_add_favorite
             menu?.add(toggleFavoriteItemTitleRes)?.setOnMenuItemClickListener {
                 stationInteractionListener.onContextMenuFavoriteToggled(stations[adapterPosition])
                 true
@@ -200,6 +203,7 @@ class StationAdapterV2(context: Context,
         init {
             view.setOnCreateContextMenuListener(this)
         }
+
         val label: TextView = view.station_item_label
         val distance: TextView = view.station_item_distance
         val star: ImageView = view.station_item_star

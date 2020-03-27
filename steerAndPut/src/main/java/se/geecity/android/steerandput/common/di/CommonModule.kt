@@ -41,7 +41,7 @@ val commonModule = module {
     single { FavoriteUtil(androidContext()) }
     single<FusedLocationProviderClient> { LocationServices.getFusedLocationProviderClient(androidContext()) }
 
-    factory { StationAdapterV2(androidContext(), get()) }
+    factory { StationAdapterV2(androidContext(), get(), get()) }
     factory<StationInteractionListener> { StationInteractionListenerImpl(get(), get()) }
 
     factory { FirebaseAnalytics.getInstance(androidContext()) }
