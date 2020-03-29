@@ -38,6 +38,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.fragment_list.*
 import org.koin.android.ext.android.inject
+import se.geecity.android.data.AppExecutors
 import se.geecity.android.steerandput.NavigationManager
 import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.constants.ACTION_BROADCAST_NEW_LOCATION
@@ -94,7 +95,7 @@ abstract class AbsListFragment : StationShowingFragment() {
         listSwipeRefreshLayout.setOnRefreshListener(onRefreshListener)
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context!!)
-        favoriteUtil = FavoriteUtil(context)
+        favoriteUtil = FavoriteUtil(context!!, AppExecutors())
 
         parseArguments()
 
@@ -214,7 +215,7 @@ abstract class AbsListFragment : StationShowingFragment() {
         }
 
         override fun onContextMenuFavoriteToggled(station: Station) {
-            if (favoriteUtil.favorites.contains(station.id)) {
+            if (favoriteUtil.isFavorite(station.id)) {
                 favoriteUtil.removeFavorite(station.id)
                 firebaseLogger.removeFavoriteStation(station, "context-menu")
             } else {

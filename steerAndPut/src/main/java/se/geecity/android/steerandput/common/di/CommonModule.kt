@@ -38,7 +38,7 @@ import se.geecity.android.steerandput.common.persistance.FavoriteUtil
 
 val commonModule = module {
 
-    single { FavoriteUtil(androidContext()) }
+    single { FavoriteUtil(androidContext(), get()) }
     single<FusedLocationProviderClient> { LocationServices.getFusedLocationProviderClient(androidContext()) }
 
     factory { StationAdapterV2(androidContext(), get(), get()) }

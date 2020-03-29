@@ -97,7 +97,7 @@ class FavoritesFragment : AbsListFragment() {
     }
 
     override fun updateList() {
-        val favorites = favoriteUtil.favorites
+        val favorites = favoriteUtil.getFavorites()
         adapter.favorites = favorites
         adapter.stations = stations.filter { favorites.contains(it.id) }
     }

@@ -48,13 +48,12 @@ class StationInteractionListenerImpl(
     }
 
     override fun onContextMenuFavoriteToggled(station: StationObject) {
-        if (favoriteUtil.favorites.contains(station.id)) {
+        if (favoriteUtil.isFavorite(station.id)) {
             favoriteUtil.removeFavorite(station.id)
             firebaseLogger.removeFavoriteStation(station, "context-menu")
         } else {
             favoriteUtil.addFavorite(station.id)
             firebaseLogger.addFavoriteStation(station, "context-menu")
         }
-        //TODO (widar): does this need to update the list?
     }
 }

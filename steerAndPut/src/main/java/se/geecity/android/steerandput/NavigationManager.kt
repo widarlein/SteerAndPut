@@ -27,6 +27,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import android.util.Log
+import se.geecity.android.data.AppExecutors
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
 import se.geecity.android.steerandput.common.view.StationShowingFragment
@@ -42,10 +43,11 @@ class NavigationManager private constructor(context: Context,
                                             private val fragmentManager: FragmentManager,
                                             private val mainPresenter: MainPresenter) : FragmentManager.OnBackStackChangedListener {
 
-    private val favoritsUtil = FavoriteUtil(context)
+    //inject this!!
+    private val favoritsUtil = FavoriteUtil(context, AppExecutors())
 
     init {
-        setInitialFragment(favoritsUtil.favorites)
+        setInitialFragment(favoritsUtil.getFavorites())
     }
 
     companion object {

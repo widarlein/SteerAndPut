@@ -72,6 +72,7 @@ class StationAdapterV2(context: Context,
 
     init {
         setHasStableIds(true)
+        favoriteUtil.addOnChangeObserver { notifyDataSetChanged() }
     }
 
     companion object {
