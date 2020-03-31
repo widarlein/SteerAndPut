@@ -37,5 +37,5 @@ val nearbyModule = module {
     factory<StationObjectRepository> { SelfServiceBicycleServiceProvider(get(named(BICYCLESERVICE_API_KEY_PROPERTY)), get()) }
     factory { GetStationsObjects(get()) }
 
-    viewModel { NearbyViewModel(get(), get(), get()) }
+    viewModel { NearbyViewModel(get(), get()) }
 }

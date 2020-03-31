@@ -35,6 +35,8 @@ import se.geecity.android.steerandput.common.adapter.StationInteractionListenerI
 import se.geecity.android.steerandput.common.logging.FirebaseLogger
 import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
+import se.geecity.android.steerandput.common.viewmodel.StationObjectsGetter
+import se.geecity.android.steerandput.common.viewmodel.StationObjectsGetterImpl
 
 val commonModule = module {
 
@@ -48,4 +50,6 @@ val commonModule = module {
     single { FirebaseLogger(get(), androidContext()) }
     single { FirebaseLoggerV2(get(), androidContext()) }
     single { AppExecutors() }
+
+    factory<StationObjectsGetter> { StationObjectsGetterImpl(get(), get()) }
 }

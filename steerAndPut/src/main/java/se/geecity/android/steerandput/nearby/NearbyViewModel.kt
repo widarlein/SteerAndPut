@@ -23,32 +23,13 @@
  */
 package se.geecity.android.steerandput.nearby
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
-import se.geecity.android.data.AppExecutors
-import se.geecity.android.domain.entities.Resource
-import se.geecity.android.domain.entities.StationObject
-import se.geecity.android.domain.nearby.GetStationsObjects
 import se.geecity.android.steerandput.common.location.LocationLiveData
+import se.geecity.android.steerandput.common.viewmodel.StationObjectsGetter
 
-class NearbyViewModel(private val getStationsObjects: GetStationsObjects,
-                      private val appExecutors: AppExecutors,
-                      fusedLocationProviderClient: FusedLocationProviderClient) : ViewModel() {
-
-    val stationObjects: MutableLiveData<Resource<List<StationObject>>> by lazy {
-        MutableLiveData<Resource<List<StationObject>>>().also {
-            it.value = Resource.Loading
-            fetchStationObjects()
-        }
-    }
+class NearbyViewModel(private val stationObjectsGetter: StationObjectsGetter,
+                      fusedLocationProviderClient: FusedLocationProviderClient) : ViewModel(), StationObjectsGetter by stationObjectsGetter {
 
     val locationLiveData: LocationLiveData = LocationLiveData(fusedLocationProviderClient)
-
-    fun fetchStationObjects() {
-        appExecutors.worker.execute {
-            val stations = getStationsObjects()
-            stationObjects.postValue(stations)
-        }
-    }
 }
