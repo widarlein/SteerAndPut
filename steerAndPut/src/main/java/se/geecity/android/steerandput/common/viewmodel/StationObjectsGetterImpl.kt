@@ -21,23 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput.common.persistance
+package se.geecity.android.steerandput.common.viewmodel
 
-import android.content.Context
+import androidx.lifecycle.MutableLiveData
+import se.geecity.android.data.AppExecutors
+import se.geecity.android.domain.entities.Resource
+import se.geecity.android.domain.entities.StationObject
+import se.geecity.android.domain.nearby.GetStationsObjects
 
-class FavoritesMigrator(private val context: Context, private val oldFavoriteUtil: OldFavoriteUtil, private val newFavoritesUtil: NewFavoritesUtil) {
-
-    fun migrateIfPossible() {
-        if (favoritesFileExists()) {
-            val favorites = oldFavoriteUtil.favorites
-            newFavoritesUtil.saveFavorites(favorites.map { it.id }.toSet())
-            deleteOldFavoritesFile()
+class StationObjectsGetterImpl(private val getStationsObjects: GetStationsObjects,
+                               private val appExecutors: AppExecutors) : StationObjectsGetter {
+    override val stationObjects: MutableLiveData<Resource<List<StationObject>>> by lazy {
+        MutableLiveData<Resource<List<StationObject>>>().also {
+            it.value = Resource.Loading
+            fetchStationObjects()
         }
     }
 
-    fun favoritesFileExists() = context.fileList().any { it == OldFavoriteUtil.FILENAME }
-
-    private fun deleteOldFavoritesFile() {
-        context.deleteFile(OldFavoriteUtil.FILENAME)
+    override fun fetchStationObjects() {
+        appExecutors.worker.execute {
+            val stations = getStationsObjects()
+            stationObjects.postValue(stations)
+        }
     }
 }

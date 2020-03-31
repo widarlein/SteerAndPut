@@ -25,19 +25,28 @@ package se.geecity.android.steerandput.common.persistance
 
 import android.content.Context
 import android.content.SharedPreferences
+import se.geecity.android.data.AppExecutors
 import se.geecity.android.steerandput.common.exception.SteerAndPutException
-import se.geecity.android.steerandput.common.model.Station
 
 internal const val PREFS_FILENAME = "favorites"
 internal const val PREFS_KEY = "favorites"
 
-class NewFavoritesUtil(context: Context) {
+class FavoriteUtil(context: Context,
+                   private val executors: AppExecutors) {
 
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
 
-    fun getFavorites(): Set<Int> {
+    private val favorites: MutableSet<Int>
+
+    private val onChangeObservers: MutableSet<() -> Unit> = mutableSetOf()
+
+    init {
         val idsString = prefs.getString(PREFS_KEY, null)
-        return idsString?.split(",")?.map { it.toInt() }?.toSet() ?: setOf()
+        favorites = idsString?.split(",")?.map { it.toInt() }?.toMutableSet() ?: mutableSetOf()
+    }
+
+    fun getFavorites(): Set<Int> {
+        return favorites
     }
 
     @Throws(SteerAndPutException::class)
@@ -51,14 +60,30 @@ class NewFavoritesUtil(context: Context) {
     }
 
     fun addFavorite(stationId: Int) {
-        val favorites = getFavorites().toMutableSet()
         favorites.add(stationId)
         saveFavorites(favorites)
+        notifyObservers()
     }
 
     fun removeFavorite(stationId: Int) {
-        val favorites = getFavorites().toMutableSet()
         favorites.remove(stationId)
         saveFavorites(favorites)
+        notifyObservers()
+    }
+
+    fun isFavorite(stationId: Int) = favorites.contains(stationId)
+
+    fun addOnChangeObserver(observer: () -> Unit) {
+        onChangeObservers.add(observer)
+    }
+
+    fun removeOnChangeObserver(observer: () -> Unit) {
+        onChangeObservers.remove(observer)
+    }
+
+    private fun notifyObservers() {
+        executors.mainThread.execute {
+            onChangeObservers.forEach { it() }
+        }
     }
 }

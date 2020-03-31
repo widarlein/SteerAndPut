@@ -21,40 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput.common.persistance;
+package se.geecity.android.steerandput.mapv2
 
-import android.content.Context;
+import androidx.lifecycle.ViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import se.geecity.android.steerandput.common.location.LocationLiveData
+import se.geecity.android.steerandput.common.viewmodel.StationObjectsGetter
 
-import java.util.List;
-import java.util.Set;
+class MapViewModel(private val stationObjectsGetter: StationObjectsGetter,
+                   fusedLocationProviderClient: FusedLocationProviderClient) : ViewModel(), StationObjectsGetter by stationObjectsGetter {
 
-import se.geecity.android.steerandput.common.exception.SteerAndPutException;
-import se.geecity.android.steerandput.common.model.Station;
-
-public class FavoriteUtil {
-
-    private static String TAG = FavoriteUtil.class.getSimpleName();
-
-    private final NewFavoritesUtil mNewFavoritesUtil;
-
-    public FavoriteUtil(Context context) {
-        OldFavoriteUtil oldFavoriteUtil = new OldFavoriteUtil(context);
-        mNewFavoritesUtil = new NewFavoritesUtil(context);
-        FavoritesMigrator favoritesMigrator = new FavoritesMigrator(context, oldFavoriteUtil, mNewFavoritesUtil);
-        favoritesMigrator.migrateIfPossible();
-    }
-
-
-    public Set<Integer> getFavorites() {
-        return mNewFavoritesUtil.getFavorites();
-    }
-
-    public void addFavorite(int stationId) {
-        mNewFavoritesUtil.addFavorite(stationId);
-    }
-
-    public void removeFavorite(int stationId) {
-        mNewFavoritesUtil.removeFavorite(stationId);
-    }
-
+    val locationLiveData: LocationLiveData = LocationLiveData(fusedLocationProviderClient)
 }

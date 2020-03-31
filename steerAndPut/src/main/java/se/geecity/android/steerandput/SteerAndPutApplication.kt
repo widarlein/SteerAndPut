@@ -28,8 +28,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import se.geecity.android.steerandput.common.di.commonModule
 import se.geecity.android.steerandput.historicalstation.di.stationModule
 import se.geecity.android.steerandput.main.di.mainModule
+import se.geecity.android.steerandput.mapv2.di.mapModule
+import se.geecity.android.steerandput.nearby.di.nearbyModule
 
 /**
  * Application class of the app. Used for initializing Koin
@@ -41,7 +44,7 @@ class SteerAndPutApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@SteerAndPutApplication)
-            modules(mainModule, stationModule)
+            modules(mainModule, commonModule, stationModule, nearbyModule, mapModule)
         }
     }
 

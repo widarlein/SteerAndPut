@@ -76,7 +76,7 @@ class ListFragment : AbsListFragment() {
     override fun initialize() {}
 
     override fun updateList() {
-        adapter.favorites = favoriteUtil.favorites
+        adapter.favorites = favoriteUtil.getFavorites()
         adapter.stations = stations
     }
 }

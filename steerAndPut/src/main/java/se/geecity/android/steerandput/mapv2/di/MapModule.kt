@@ -21,33 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput
+package se.geecity.android.steerandput.mapv2.di
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.JsonDeserializationContext
-import okhttp3.OkHttpClient
-import java.lang.reflect.Type
-import java.util.Date
+import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.dsl.module
+import se.geecity.android.steerandput.mapv2.MapViewModel
 
-abstract class BaseProvider {
-
-    protected var gson: Gson
-    protected val client = OkHttpClient()
-
-    init {
-        val deserializer = object : JsonDeserializer<Date> {
-            override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): Date? {
-                val raw = json?.asJsonPrimitive?.asString ?: return null
-                val timeStampString = raw.substring(6..18)
-                return Date(timeStampString.toLong())
-            }
-        }
-        gson = GsonBuilder().registerTypeAdapter(Date::class.java, deserializer)
-                .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                .create()
-    }
+val mapModule = module {
+    viewModel { MapViewModel(get(), get()) }
 }

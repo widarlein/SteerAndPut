@@ -46,6 +46,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
+import se.geecity.android.data.AppExecutors
 import se.geecity.android.steerandput.NavigationManager
 import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.constants.ACTION_BROADCAST_NEW_LOCATION
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity(),
         mainPresenter.mainView = this
 
         localBroadcasManager = LocalBroadcastManager.getInstance(applicationContext)
-        favoriteUtil = FavoriteUtil(applicationContext)
+        favoriteUtil = FavoriteUtil(applicationContext, AppExecutors())
 
         setSupportActionBar(toolbar)
 
@@ -135,6 +136,13 @@ class MainActivity : AppCompatActivity(),
 
         googleApiClient.connect()
         refreshStations()
+
+        // Bad practice, I know. The beauty of open source is that i you can complain, you can fix it
+        if (!hasFineLocationPermission(applicationContext)) {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    FINE_LOCATION_PERMISSION_REQUEST)
+        }
     }
 
     override fun onStop() {
@@ -196,8 +204,7 @@ class MainActivity : AppCompatActivity(),
         val (viewIdentifier, arguments) = when (tag) {
             TAB_FAVORITES -> Pair(ViewIdentifier.FAVORITES,
                     FavoritesFragment.createArgumentsBundle(stations, location))
-            TAB_LIST -> Pair(ViewIdentifier.LIST,
-                    ListFragment.createArgumentsBundle(stations, location))
+            TAB_LIST -> Pair(ViewIdentifier.NEARBY, Bundle())
             TAB_MAP -> Pair(ViewIdentifier.MAP,
                     MapFragment.createArgumentsBundle(stations, location))
             else -> Pair(ViewIdentifier.LIST,
@@ -209,11 +216,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onConnected(connectionHint: Bundle?) {
-        if (!hasFineLocationPermission(applicationContext)) {
-            ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    FINE_LOCATION_PERMISSION_REQUEST)
-        } else {
+        if (hasFineLocationPermission(applicationContext)) {
             startLocationUpdates()
         }
     }
@@ -291,7 +294,7 @@ class MainActivity : AppCompatActivity(),
         tabLayout.addTab(listTab, 1)
         tabLayout.addTab(mapTab, 2)
 
-        if (favoriteUtil.favorites.size > 0) {
+        if (favoriteUtil.getFavorites().size > 0) {
             favoritesTab.select()
         } else {
             listTab.select()
