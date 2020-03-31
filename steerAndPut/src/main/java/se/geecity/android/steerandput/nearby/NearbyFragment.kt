@@ -27,6 +27,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.fragment_list.*
 import org.koin.android.ext.android.inject
@@ -46,11 +47,12 @@ import se.geecity.android.steerandput.common.view.ViewIdentifier
 class NearbyFragment() : StationShowingFragment() {
 
     override var stations: List<Station> = listOf()
-    val firebaseLogger: FirebaseLoggerV2 by inject()
+    private val firebaseLogger: FirebaseLoggerV2 by inject()
 
-    val nearbyViewModel: NearbyViewModel by viewModel()
+    private val nearbyViewModel: NearbyViewModel by viewModel()
 
-    val adapter: StationAdapterV2 by inject()
+    private val adapter: StationAdapterV2 by inject()
+    private lateinit var connectionErrorView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_list, container,  false)
@@ -60,17 +62,34 @@ class NearbyFragment() : StationShowingFragment() {
         super.onViewCreated(view, savedInstanceState)
         firebaseLogger.pageView(ViewIdentifier.NEARBY)
         recyclerView.adapter = adapter
+
+        connectionErrorView = requireActivity().layoutInflater.inflate(R.layout.view_list_connection_error, list_listcontainer, false)
+        connectionErrorView.visibility = View.GONE
+        list_listcontainer.addView(connectionErrorView,
+                FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT))
+
+        listSwipeRefreshLayout.setOnRefreshListener {
+            nearbyViewModel.fetchStationObjects()
+        }
     }
 
     override fun onStart() {
         super.onStart()
         nearbyViewModel.stationObjects.observe(this) { stationObjectsResource ->
             when (stationObjectsResource) {
-                Resource.Loading -> {}
+                Resource.Loading -> listSwipeRefreshLayout.isRefreshing = true
                 is Success -> {
                     adapter.stations = stationObjectsResource.body
+                    listSwipeRefreshLayout.isRefreshing = false
+                    connectionErrorView.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
                 }
-                is Failure -> {}
+                is Failure -> {
+                    listSwipeRefreshLayout.isRefreshing = false
+                    recyclerView.visibility = View.GONE
+                    connectionErrorView.visibility = View.VISIBLE
+                }
             }
         }
         if (hasFineLocationPermission(requireContext())) {
