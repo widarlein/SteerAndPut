@@ -24,8 +24,11 @@
 package se.geecity.android.steerandput.common.adapter
 
 import se.geecity.android.domain.entities.StationObject
+import se.geecity.android.steerandput.NavigationManager
 import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
+import se.geecity.android.steerandput.common.view.ViewIdentifier
+import se.geecity.android.steerandput.mapv2.MapFragment
 
 interface StationInteractionListener {
     fun onStationClicked(station: StationObject)
@@ -39,7 +42,9 @@ class StationInteractionListenerImpl(
 ) : StationInteractionListener {
     override fun onStationClicked(station: StationObject) {
         firebaseLogger.stationListItemClicked(station)
-        //TODO (widar): Navigate to station on map
+        val navigationRequest = NavigationManager.NavigationRequest(ViewIdentifier.MAP,
+                MapFragment.createArguments(station))
+        NavigationManager.instance?.navigate(navigationRequest)
     }
 
     override fun onContextMenuDetailsClicked(station: StationObject) {

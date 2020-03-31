@@ -21,35 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput
+package se.geecity.android.steerandput.mapv2.di
 
-import android.app.Application
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import se.geecity.android.steerandput.common.di.commonModule
-import se.geecity.android.steerandput.historicalstation.di.stationModule
-import se.geecity.android.steerandput.main.di.mainModule
-import se.geecity.android.steerandput.mapv2.di.mapModule
-import se.geecity.android.steerandput.nearby.di.nearbyModule
+import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.dsl.module
+import se.geecity.android.steerandput.mapv2.MapViewModel
 
-/**
- * Application class of the app. Used for initializing Koin
- */
-class SteerAndPutApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin {
-            androidLogger()
-            androidContext(this@SteerAndPutApplication)
-            modules(mainModule, commonModule, stationModule, nearbyModule, mapModule)
-        }
-    }
-
-    override fun onTerminate() {
-        super.onTerminate()
-        stopKoin()
-    }
+val mapModule = module {
+    viewModel { MapViewModel(get(), get()) }
 }
