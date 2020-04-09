@@ -21,36 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput
+package se.geecity.android.steerandput.common.persistance
 
-import android.app.Application
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import se.geecity.android.steerandput.common.di.commonModule
-import se.geecity.android.steerandput.favorite.di.favoriteModule
-import se.geecity.android.steerandput.historicalstation.di.stationModule
-import se.geecity.android.steerandput.main.di.mainModule
-import se.geecity.android.steerandput.mapv2.di.mapModule
-import se.geecity.android.steerandput.nearby.di.nearbyModule
+import androidx.lifecycle.LiveData
 
-/**
- * Application class of the app. Used for initializing Koin
- */
-class SteerAndPutApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
+class FavoriteLiveData(private val favoriteUtil: FavoriteUtil) : LiveData<Set<Int>>() {
 
-        startKoin {
-            androidLogger()
-            androidContext(this@SteerAndPutApplication)
-            modules(mainModule, commonModule, stationModule, nearbyModule, mapModule, favoriteModule)
-        }
+    val observer = {
+        value = favoriteUtil.getFavorites()
     }
 
-    override fun onTerminate() {
-        super.onTerminate()
-        stopKoin()
+    override fun onInactive() {
+        super.onInactive()
+        favoriteUtil.removeOnChangeObserver(observer)
+    }
+
+    override fun onActive() {
+        super.onActive()
+        value = favoriteUtil.getFavorites()
+        favoriteUtil.addOnChangeObserver(observer)
     }
 }

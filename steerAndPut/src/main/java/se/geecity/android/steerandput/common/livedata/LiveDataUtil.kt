@@ -21,36 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput
+package se.geecity.android.steerandput.common.livedata
 
-import android.app.Application
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import se.geecity.android.steerandput.common.di.commonModule
-import se.geecity.android.steerandput.favorite.di.favoriteModule
-import se.geecity.android.steerandput.historicalstation.di.stationModule
-import se.geecity.android.steerandput.main.di.mainModule
-import se.geecity.android.steerandput.mapv2.di.mapModule
-import se.geecity.android.steerandput.nearby.di.nearbyModule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 
-/**
- * Application class of the app. Used for initializing Koin
- */
-class SteerAndPutApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
+fun <A, B> LiveData<A>.combineLatest(b: LiveData<B>): LiveData<Pair<A, B>> {
+    return MediatorLiveData<Pair<A, B>>().apply {
+        var lastA: A? = null
+        var lastB: B? = null
 
-        startKoin {
-            androidLogger()
-            androidContext(this@SteerAndPutApplication)
-            modules(mainModule, commonModule, stationModule, nearbyModule, mapModule, favoriteModule)
+        addSource(this@combineLatest) {
+            if (it == null && value != null) value = null
+            lastA = it
+            if (lastA != null && lastB != null) value = lastA!! to lastB!!
         }
-    }
 
-    override fun onTerminate() {
-        super.onTerminate()
-        stopKoin()
+        addSource(b) {
+            if (it == null && value != null) value = null
+            lastB = it
+            if (lastA != null && lastB != null) value = lastA!! to lastB!!
+        }
     }
 }
