@@ -23,13 +23,13 @@
  */
 package se.geecity.android.steerandput.common.viewmodel
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import se.geecity.android.domain.entities.Resource
 import se.geecity.android.domain.entities.StationObject
 
 interface StationObjectsGetter {
 
-    val stationObjects: MutableLiveData<Resource<List<StationObject>>>
+    val stationObjects: LiveData<Resource<List<StationObject>>>
 
     fun fetchStationObjects()
 }
