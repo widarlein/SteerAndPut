@@ -21,15 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput.common.viewmodel
+package se.geecity.android.steerandput.common.persistance
 
 import androidx.lifecycle.LiveData
-import se.geecity.android.domain.entities.Resource
-import se.geecity.android.domain.entities.StationObject
 
-interface StationObjectsGetter {
+class FavoriteLiveData(private val favoriteUtil: FavoriteUtil) : LiveData<Set<Int>>() {
 
-    val stationObjects: LiveData<Resource<List<StationObject>>>
+    val observer = {
+        value = favoriteUtil.getFavorites()
+    }
 
-    fun fetchStationObjects()
+    override fun onInactive() {
+        super.onInactive()
+        favoriteUtil.removeOnChangeObserver(observer)
+    }
+
+    override fun onActive() {
+        super.onActive()
+        value = favoriteUtil.getFavorites()
+        favoriteUtil.addOnChangeObserver(observer)
+    }
 }

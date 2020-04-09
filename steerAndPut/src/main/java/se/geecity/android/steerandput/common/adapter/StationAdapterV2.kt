@@ -80,6 +80,8 @@ class StationAdapterV2(context: Context,
         const val TYPE_BIKE = 1
     }
 
+    override fun getItemId(position: Int): Long = stations[position].id.toLong()
+
     override fun getItemViewType(position: Int): Int = if (stations[position].isBike) TYPE_BIKE else TYPE_STATION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

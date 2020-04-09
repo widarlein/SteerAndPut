@@ -21,15 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput.common.viewmodel
+package se.geecity.android.steerandput.favorite.di
 
-import androidx.lifecycle.LiveData
-import se.geecity.android.domain.entities.Resource
-import se.geecity.android.domain.entities.StationObject
+import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.dsl.module
+import se.geecity.android.steerandput.favorite.FavoriteViewModel
 
-interface StationObjectsGetter {
-
-    val stationObjects: LiveData<Resource<List<StationObject>>>
-
-    fun fetchStationObjects()
+val favoriteModule = module {
+    viewModel { FavoriteViewModel(get(), get(), get()) }
 }
