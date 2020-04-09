@@ -27,11 +27,17 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import se.geecity.android.data.AppExecutors
+import se.geecity.android.data.clients.SelfServiceBicycleServiceProvider
+import se.geecity.android.data.repository.CachedStationObjectRepository
+import se.geecity.android.domain.nearby.GetStationsObjects
+import se.geecity.android.domain.repositories.StationObjectRepository
 import se.geecity.android.steerandput.common.adapter.StationAdapterV2
 import se.geecity.android.steerandput.common.adapter.StationInteractionListener
 import se.geecity.android.steerandput.common.adapter.StationInteractionListenerImpl
+import se.geecity.android.steerandput.common.constants.BICYCLESERVICE_API_KEY_PROPERTY
 import se.geecity.android.steerandput.common.logging.FirebaseLogger
 import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
@@ -52,4 +58,11 @@ val commonModule = module {
     single { AppExecutors() }
 
     factory<StationObjectsGetter> { StationObjectsGetterImpl(get(), get()) }
+
+    factory { SelfServiceBicycleServiceProvider(get(named(BICYCLESERVICE_API_KEY_PROPERTY)), get()) }
+    single<StationObjectRepository> { CachedStationObjectRepository(get()) }
+
+    factory { GetStationsObjects(get()) }
+
+
 }
