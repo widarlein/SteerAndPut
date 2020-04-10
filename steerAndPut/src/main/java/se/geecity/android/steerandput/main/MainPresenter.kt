@@ -29,7 +29,8 @@ import se.geecity.android.steerandput.main.interactor.StationsInteractor
 /**
  * Presenter for the main view of the app.
  */
-class MainPresenter(val stationsInteractor: StationsInteractor) {
+class MainPresenter(val stationsInteractor: StationsInteractor,
+                    private val mainComm: MainComm) {
 
     lateinit var mainView: MainView
 
@@ -45,6 +46,7 @@ class MainPresenter(val stationsInteractor: StationsInteractor) {
 
     fun refreshPressed() {
         stationsInteractor.getStations(stationsCallback)
+        mainComm.requestRefresh()
     }
 
     fun viewActiveFromBackstack(viewIdentifier: ViewIdentifier) {
