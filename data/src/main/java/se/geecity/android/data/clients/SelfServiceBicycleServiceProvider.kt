@@ -70,7 +70,7 @@ class SelfServiceBicycleServiceProvider(apiKey: String, private val appExecutors
                 .create()
     }
 
-    override fun getStationObjects(): Resource<List<StationObject>> {
+    override fun getStationObjects(immediate: Boolean): Resource<List<StationObject>> {
         val request = Request.Builder().url(url).build()
 
         try {

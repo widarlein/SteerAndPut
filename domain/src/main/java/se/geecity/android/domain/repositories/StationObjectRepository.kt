@@ -28,5 +28,5 @@ import se.geecity.android.domain.entities.StationObject
 
 interface StationObjectRepository {
 
-    fun getStationObjects(): Resource<List<StationObject>>
+    fun getStationObjects(immediate: Boolean = false): Resource<List<StationObject>>
 }

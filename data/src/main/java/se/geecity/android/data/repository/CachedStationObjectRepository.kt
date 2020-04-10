@@ -34,13 +34,13 @@ class CachedStationObjectRepository(private val networkRepository: SelfServiceBi
     private var cache: Resource<List<StationObject>>? = null
     private var lastRequestTime: Long = 0
 
-    override fun getStationObjects(): Resource<List<StationObject>> {
+    override fun getStationObjects(immediate: Boolean): Resource<List<StationObject>> {
 
         val now = SystemClock.elapsedRealtime()
         val cache = cache
 
-        val resource = if (now - lastRequestTime < 30000 && cache != null) {
-            cache
+        val resource = if (shouldReturnCache(now, immediate)) {
+            cache!!
         } else {
             networkRepository.getStationObjects().also { this.cache = it }
         }
@@ -48,4 +48,6 @@ class CachedStationObjectRepository(private val networkRepository: SelfServiceBi
         lastRequestTime = now
         return resource
     }
+
+    private fun shouldReturnCache(now: Long, immediate: Boolean) = now - lastRequestTime < 30000 && cache != null && !immediate
 }

@@ -32,4 +32,8 @@ class GetStationsObjects(private val stationObjectRepository: StationObjectRepos
     operator fun invoke(): Resource<List<StationObject>> {
         return stationObjectRepository.getStationObjects()
     }
+
+    fun immediate(): Resource<List<StationObject>> {
+        return stationObjectRepository.getStationObjects(immediate = true)
+    }
 }
