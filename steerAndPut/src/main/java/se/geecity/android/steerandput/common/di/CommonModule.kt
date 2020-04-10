@@ -57,7 +57,7 @@ val commonModule = module {
     single { FirebaseLoggerV2(get(), androidContext()) }
     single { AppExecutors() }
 
-    factory<StationObjectsGetter> { StationObjectsGetterImpl(get(), get()) }
+    factory<StationObjectsGetter> { StationObjectsGetterImpl(get(), get(), get()) }
 
     factory { SelfServiceBicycleServiceProvider(get(named(BICYCLESERVICE_API_KEY_PROPERTY)), get()) }
     single<StationObjectRepository> { CachedStationObjectRepository(get()) }
