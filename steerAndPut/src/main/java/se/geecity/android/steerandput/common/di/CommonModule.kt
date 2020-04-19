@@ -59,7 +59,7 @@ val commonModule = module {
 
     factory<StationObjectsGetter> { StationObjectsGetterImpl(get(), get(), get()) }
 
-    factory { SelfServiceBicycleServiceProvider(get(named(BICYCLESERVICE_API_KEY_PROPERTY)), get()) }
+    factory { SelfServiceBicycleServiceProvider(get(named(BICYCLESERVICE_API_KEY_PROPERTY))) }
     single<StationObjectRepository> { CachedStationObjectRepository(get()) }
 
     factory { GetStationsObjects(get()) }

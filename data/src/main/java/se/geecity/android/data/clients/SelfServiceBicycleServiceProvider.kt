@@ -27,7 +27,6 @@ import com.google.gson.*
 import com.google.gson.reflect.TypeToken
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import se.geecity.android.data.AppExecutors
 import se.geecity.android.data.model.StationObjectDao
 import se.geecity.android.domain.entities.Failure
 import se.geecity.android.domain.entities.Resource
@@ -44,13 +43,14 @@ import java.util.*
  *
  * @param apiKey api key for the SelfServiceBicycleService service.
  */
-class SelfServiceBicycleServiceProvider(apiKey: String, private val appExecutors: AppExecutors) : StationObjectRepository {
+class SelfServiceBicycleServiceProvider(apiKey: String) : StationObjectRepository {
 
     companion object {
-        private val URL_TEMPLATE = "https://data.goteborg.se/SelfServiceBicycleService/v2.0/Stations/%s?format=json"
+        private const val URL_BASE = "https://data.goteborg.se/SelfServiceBicycleService/v2.0/Stations/"
     }
 
-    private val url = String.format(URL_TEMPLATE, apiKey)
+    private val allStationsUrl = "$URL_BASE$apiKey?format=json"
+    private val singleStationUrlTemplate = "$URL_BASE$apiKey/%s?format=json"
 
     private val stationListTypeToken = object : TypeToken<List<StationObjectDao>>() {}
 
@@ -71,7 +71,7 @@ class SelfServiceBicycleServiceProvider(apiKey: String, private val appExecutors
     }
 
     override fun getStationObjects(immediate: Boolean): Resource<List<StationObject>> {
-        val request = Request.Builder().url(url).build()
+        val request = Request.Builder().url(allStationsUrl).build()
 
         try {
             val response = client.newCall(request).execute()
@@ -80,6 +80,31 @@ class SelfServiceBicycleServiceProvider(apiKey: String, private val appExecutors
                 val stationDaos: List<StationObjectDao> = gson.fromJson(response.body()!!.string(), stationListTypeToken.type)
 
                 Success(stationDaos.map { it.toDomainObject() })
+
+            } else {
+                Failure(response.body()!!.string())
+            }
+
+        } catch (e: IOException) {
+            return Failure(e.message)
+        }
+    }
+
+    override fun getStationObject(id: Int): Resource<StationObject> {
+        val url = singleStationUrlTemplate.format(id)
+        val request = Request.Builder().url(url).build()
+
+        try {
+            val response = client.newCall(request).execute()
+            return if (response.isSuccessful) {
+                //TODO JsonSyntaxException (on wifis redirecting you to login page, eg)
+                val stationDaos: List<StationObjectDao> = gson.fromJson(response.body()!!.string(), stationListTypeToken.type)
+
+                if (stationDaos.isEmpty()) {
+                    throw IllegalStateException("No stations returned. Wrong ID?")
+                }
+
+                Success(stationDaos.first().toDomainObject())
 
             } else {
                 Failure(response.body()!!.string())
