@@ -29,6 +29,7 @@ import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
 import se.geecity.android.steerandput.common.view.ViewIdentifier
 import se.geecity.android.steerandput.mapv2.MapFragment
+import se.geecity.android.steerandput.station.StationFragment
 
 interface StationInteractionListener {
     fun onStationClicked(station: StationObject)
@@ -49,7 +50,8 @@ class StationInteractionListenerImpl(
 
     override fun onContextMenuDetailsClicked(station: StationObject) {
         firebaseLogger.stationListItemDetailsClicked(station)
-        //TODO (widar): Navigate to station view. (STILL RELEVANT?)
+        val request = NavigationManager.NavigationRequest(ViewIdentifier.STATION, StationFragment.createArguments(station))
+        NavigationManager.instance?.navigate(request)
     }
 
     override fun onContextMenuFavoriteToggled(station: StationObject) {
