@@ -39,6 +39,16 @@ class StationViewModel(private val getStationsObject: GetStationObject,
                        private val mainComm: MainComm,
                        fusedLocationProviderClient: FusedLocationProviderClient) : ViewModel() {
 
+    init {
+        mainComm.addObserver(object : MainComm.MainObserver {
+            override fun refreshRequested() {
+                stationObject.value = Resource.Loading
+                fetchStationObject()
+            }
+
+        })
+    }
+
     var stationObjectId: Int? = null
 
     val location = LocationLiveData(fusedLocationProviderClient)

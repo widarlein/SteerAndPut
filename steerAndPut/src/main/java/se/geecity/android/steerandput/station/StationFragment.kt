@@ -38,6 +38,7 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import se.geecity.android.data.model.ParcelableStationObject
 import se.geecity.android.data.model.toParcelable
+import se.geecity.android.domain.entities.Failure
 import se.geecity.android.domain.entities.Resource
 import se.geecity.android.domain.entities.StationObject
 import se.geecity.android.domain.entities.Success
@@ -92,6 +93,10 @@ class StationFragment : StationShowingFragment() {
 
         setStationInfo(station)
 
+        swipeRefreshLayout.setOnRefreshListener {
+            stationViewModel.fetchStationObject()
+        }
+
         firebaseLogger.pageView(ViewIdentifier.STATION, station)
     }
 
@@ -105,8 +110,14 @@ class StationFragment : StationShowingFragment() {
         stationViewModel.stationObjectId = station.id
         stationViewModel.stationObject.observe(this) { stationResource ->
             when (stationResource) {
-                Resource.Loading -> stationName.text = "LOADING"
-                is Success -> setStationInfo(stationResource.body)
+                Resource.Loading -> swipeRefreshLayout.isRefreshing = true
+                is Success -> {
+                    setStationInfo(stationResource.body)
+                    swipeRefreshLayout.isRefreshing = false
+                }
+                is Failure -> {
+                    swipeRefreshLayout.isRefreshing = false
+                }
             }
         }
     }
