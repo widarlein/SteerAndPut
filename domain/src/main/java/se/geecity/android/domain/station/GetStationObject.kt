@@ -21,25 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput.main.di
+package se.geecity.android.domain.station
 
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
-import se.geecity.android.steerandput.BuildConfig
-import se.geecity.android.steerandput.common.constants.BICYCLESERVICE_API_KEY_PROPERTY
-import se.geecity.android.steerandput.common.provider.SelfServiceBicycleServiceProvider
-import se.geecity.android.steerandput.common.provider.SelfServiceBicycleServiceProviderImpl
-import se.geecity.android.steerandput.main.MainComm
-import se.geecity.android.steerandput.main.MainPresenter
-import se.geecity.android.steerandput.main.interactor.StationsInteractor
-import se.geecity.android.steerandput.main.interactor.StationsInteractorImpl
+import se.geecity.android.domain.entities.Resource
+import se.geecity.android.domain.entities.StationObject
+import se.geecity.android.domain.repositories.StationObjectRepository
 
-val mainModule = module {
-    single(named(BICYCLESERVICE_API_KEY_PROPERTY)) { BuildConfig.BICYCLESERVICE_API_KEY }
-    single<SelfServiceBicycleServiceProvider> { SelfServiceBicycleServiceProviderImpl(get(named(BICYCLESERVICE_API_KEY_PROPERTY))) }
+class GetStationObject(private val stationObjectRepository: StationObjectRepository) {
 
-    factory<StationsInteractor> { StationsInteractorImpl(get()) }
-    factory { MainPresenter(get(), get()) }
-
-    single { MainComm(get()) }
+    operator fun invoke(id: Int): Resource<StationObject> {
+        return stationObjectRepository.getStationObject(id)
+    }
 }

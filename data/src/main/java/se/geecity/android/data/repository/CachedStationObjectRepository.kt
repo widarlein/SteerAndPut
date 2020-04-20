@@ -21,35 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput.main
+package se.geecity.android.data.repository
 
-import se.geecity.android.steerandput.common.view.ViewIdentifier
-import se.geecity.android.steerandput.main.interactor.StationsInteractor
+import android.os.SystemClock
+import se.geecity.android.data.clients.SelfServiceBicycleServiceProvider
+import se.geecity.android.domain.entities.Resource
+import se.geecity.android.domain.entities.StationObject
+import se.geecity.android.domain.repositories.StationObjectRepository
 
-/**
- * Presenter for the main view of the app.
- */
-class MainPresenter(val stationsInteractor: StationsInteractor,
-                    private val mainComm: MainComm) {
+class CachedStationObjectRepository(private val networkRepository: SelfServiceBicycleServiceProvider) : StationObjectRepository {
 
-    lateinit var mainView: MainView
+    private var cache: Resource<List<StationObject>>? = null
+    private var lastRequestTime: Long = 0
 
-    val stationsCallback: (StationsInteractor.Result) -> Unit = { result ->
+    override fun getStationObjects(immediate: Boolean): Resource<List<StationObject>> {
 
-        if (result.success) {
-            mainView.newStations(result.stations)
+        val now = SystemClock.elapsedRealtime()
+        val cache = cache
+
+        val resource = if (shouldReturnCache(now, immediate)) {
+            cache!!
         } else {
-            val errorText: String = result.errorText ?: "Error was made"
-            mainView.onStationError(errorText, result.throwable)
+            networkRepository.getStationObjects().also { this.cache = it }
         }
+
+        lastRequestTime = now
+        return resource
     }
 
-    fun refreshPressed() {
-        stationsInteractor.getStations(stationsCallback)
-        mainComm.requestRefresh()
+    override fun getStationObject(id: Int): Resource<StationObject> {
+        return networkRepository.getStationObject(id)
     }
 
-    fun viewActiveFromBackstack(viewIdentifier: ViewIdentifier) {
-        mainView.markTabAsActiveWithoutEvent(viewIdentifier)
-    }
+    private fun shouldReturnCache(now: Long, immediate: Boolean) = now - lastRequestTime < 30000 && cache != null && !immediate
 }

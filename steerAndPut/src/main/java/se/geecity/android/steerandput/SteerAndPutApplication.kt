@@ -45,7 +45,7 @@ class SteerAndPutApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@SteerAndPutApplication)
-            modules(mainModule, commonModule, stationModule, nearbyModule, mapModule, favoriteModule)
+            modules(mainModule, commonModule, stationModule, nearbyModule, mapModule, favoriteModule, se.geecity.android.steerandput.station.di.stationModule)
         }
     }
 

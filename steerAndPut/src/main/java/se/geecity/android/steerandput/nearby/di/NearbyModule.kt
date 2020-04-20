@@ -24,18 +24,9 @@
 package se.geecity.android.steerandput.nearby.di
 
 import org.koin.android.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import se.geecity.android.data.clients.SelfServiceBicycleServiceProvider
-import se.geecity.android.domain.nearby.GetStationsObjects
-import se.geecity.android.domain.repositories.StationObjectRepository
-import se.geecity.android.steerandput.common.constants.BICYCLESERVICE_API_KEY_PROPERTY
 import se.geecity.android.steerandput.nearby.NearbyViewModel
 
 val nearbyModule = module {
-
-    factory<StationObjectRepository> { SelfServiceBicycleServiceProvider(get(named(BICYCLESERVICE_API_KEY_PROPERTY)), get()) }
-    factory { GetStationsObjects(get()) }
-
     viewModel { NearbyViewModel(get(), get()) }
 }

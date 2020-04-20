@@ -21,25 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.steerandput.main.di
+package se.geecity.android.steerandput.common.view
 
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
-import se.geecity.android.steerandput.BuildConfig
-import se.geecity.android.steerandput.common.constants.BICYCLESERVICE_API_KEY_PROPERTY
-import se.geecity.android.steerandput.common.provider.SelfServiceBicycleServiceProvider
-import se.geecity.android.steerandput.common.provider.SelfServiceBicycleServiceProviderImpl
-import se.geecity.android.steerandput.main.MainComm
-import se.geecity.android.steerandput.main.MainPresenter
-import se.geecity.android.steerandput.main.interactor.StationsInteractor
-import se.geecity.android.steerandput.main.interactor.StationsInteractorImpl
+import android.view.View
 
-val mainModule = module {
-    single(named(BICYCLESERVICE_API_KEY_PROPERTY)) { BuildConfig.BICYCLESERVICE_API_KEY }
-    single<SelfServiceBicycleServiceProvider> { SelfServiceBicycleServiceProviderImpl(get(named(BICYCLESERVICE_API_KEY_PROPERTY))) }
+fun View.gone() {
+    this.visibility = View.GONE
+}
 
-    factory<StationsInteractor> { StationsInteractorImpl(get()) }
-    factory { MainPresenter(get(), get()) }
-
-    single { MainComm(get()) }
+fun View.visible() {
+    this.visibility = View.VISIBLE
 }

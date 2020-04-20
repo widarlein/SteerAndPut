@@ -42,6 +42,8 @@ import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.util.hasFineLocationPermission
 import se.geecity.android.steerandput.common.view.StationShowingFragment
 import se.geecity.android.steerandput.common.view.ViewIdentifier
+import se.geecity.android.steerandput.common.view.gone
+import se.geecity.android.steerandput.common.view.visible
 
 class FavoriteFragment : StationShowingFragment() {
 
@@ -52,8 +54,10 @@ class FavoriteFragment : StationShowingFragment() {
     private val firebaseLogger: FirebaseLoggerV2 by inject()
     private val adapter: StationAdapterV2 by inject()
     private lateinit var connectionErrorView: View
+    private lateinit var emptyView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         return inflater.inflate(R.layout.fragment_list, container,  false)
     }
 
@@ -62,11 +66,9 @@ class FavoriteFragment : StationShowingFragment() {
         firebaseLogger.pageView(ViewIdentifier.NEARBY)
         recyclerView.adapter = adapter
 
-        connectionErrorView = requireActivity().layoutInflater.inflate(R.layout.view_list_connection_error, list_listcontainer, false)
-        connectionErrorView.visibility = View.GONE
-        list_listcontainer.addView(connectionErrorView,
-                FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT))
+        val layoutInflater = requireActivity().layoutInflater
+        initConnectionErrorView(layoutInflater)
+        initEmptyView(layoutInflater)
 
         listSwipeRefreshLayout.setOnRefreshListener {
             favoriteViewModel.fetchStationObjects()
@@ -81,13 +83,19 @@ class FavoriteFragment : StationShowingFragment() {
                 is Success -> {
                     adapter.stations = stationObjectsResource.body
                     listSwipeRefreshLayout.isRefreshing = false
-                    connectionErrorView.visibility = View.GONE
-                    recyclerView.visibility = View.VISIBLE
+                    connectionErrorView.gone()
+                    recyclerView.visible()
+                    if (stationObjectsResource.body.isEmpty()) {
+                        emptyView.visible()
+                    } else {
+                        emptyView.gone()
+                    }
                 }
                 is Failure -> {
                     listSwipeRefreshLayout.isRefreshing = false
-                    recyclerView.visibility = View.GONE
-                    connectionErrorView.visibility = View.VISIBLE
+                    recyclerView.gone()
+                    connectionErrorView.visible()
+                    emptyView.gone()
                 }
             }
         }
@@ -96,5 +104,21 @@ class FavoriteFragment : StationShowingFragment() {
                 adapter.location = location
             }
         }
+    }
+
+    private fun initConnectionErrorView(layoutInflater: LayoutInflater) {
+        connectionErrorView = layoutInflater.inflate(R.layout.view_list_connection_error, list_listcontainer, false)
+        connectionErrorView.gone()
+        list_listcontainer.addView(connectionErrorView,
+                FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT))
+    }
+
+    private fun initEmptyView(layoutInflater: LayoutInflater) {
+        emptyView = layoutInflater.inflate(R.layout.fragmet_favorites_emptyview, recyclerView,
+                false).apply { visibility = View.GONE }
+        list_listcontainer.addView(emptyView,
+                FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT))
     }
 }

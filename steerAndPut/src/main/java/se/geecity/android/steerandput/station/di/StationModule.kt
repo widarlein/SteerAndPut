@@ -21,18 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package se.geecity.android.data.model
+package se.geecity.android.steerandput.station.di
 
-import com.google.gson.annotations.SerializedName
-import se.geecity.android.domain.entities.StationObject
+import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.dsl.module
+import se.geecity.android.domain.station.GetStationObject
+import se.geecity.android.steerandput.station.StationViewModel
 
-data class StationObjectDao(val stationId: Int,
-                            val name: String,
-                            val lat: Double,
-                            @SerializedName("Long")
-                          val longitude: Double,
-                            val availableBikes: Int,
-                            val availableBikeStands: Int,
-                            val isOpen: Boolean) {
-    fun toDomainObject(): StationObject = StationObject(stationId, name, lat, longitude, availableBikes, availableBikeStands, isOpen)
+val stationModule = module {
+    viewModel { StationViewModel(get(), get(), get(), get()) }
+
+    factory { GetStationObject(get()) }
 }

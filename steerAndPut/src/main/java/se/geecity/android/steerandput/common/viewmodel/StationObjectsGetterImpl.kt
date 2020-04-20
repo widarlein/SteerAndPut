@@ -28,19 +28,35 @@ import se.geecity.android.data.AppExecutors
 import se.geecity.android.domain.entities.Resource
 import se.geecity.android.domain.entities.StationObject
 import se.geecity.android.domain.nearby.GetStationsObjects
+import se.geecity.android.steerandput.main.MainComm
 
 class StationObjectsGetterImpl(private val getStationsObjects: GetStationsObjects,
-                               private val appExecutors: AppExecutors) : StationObjectsGetter {
+                               private val appExecutors: AppExecutors,
+                               private val mainComm: MainComm) : StationObjectsGetter {
+
+    init {
+        mainComm.addObserver(object : MainComm.MainObserver {
+            override fun refreshRequested() {
+                stationObjects.value = Resource.Loading
+                fetchStationObjects()
+            }
+
+        })
+    }
+
     override val stationObjects: MutableLiveData<Resource<List<StationObject>>> by lazy {
         MutableLiveData<Resource<List<StationObject>>>().also {
             it.value = Resource.Loading
-            fetchStationObjects()
+            appExecutors.worker.execute {
+                val stations = getStationsObjects()
+                stationObjects.postValue(stations)
+            }
         }
     }
 
     override fun fetchStationObjects() {
         appExecutors.worker.execute {
-            val stations = getStationsObjects()
+            val stations = getStationsObjects.immediate()
             stationObjects.postValue(stations)
         }
     }
