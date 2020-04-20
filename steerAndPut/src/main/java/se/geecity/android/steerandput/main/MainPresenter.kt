@@ -24,28 +24,15 @@
 package se.geecity.android.steerandput.main
 
 import se.geecity.android.steerandput.common.view.ViewIdentifier
-import se.geecity.android.steerandput.main.interactor.StationsInteractor
 
 /**
  * Presenter for the main view of the app.
  */
-class MainPresenter(val stationsInteractor: StationsInteractor,
-                    private val mainComm: MainComm) {
+class MainPresenter(private val mainComm: MainComm) {
 
     lateinit var mainView: MainView
 
-    val stationsCallback: (StationsInteractor.Result) -> Unit = { result ->
-
-        if (result.success) {
-            mainView.newStations(result.stations)
-        } else {
-            val errorText: String = result.errorText ?: "Error was made"
-            mainView.onStationError(errorText, result.throwable)
-        }
-    }
-
     fun refreshPressed() {
-        stationsInteractor.getStations(stationsCallback)
         mainComm.requestRefresh()
     }
 

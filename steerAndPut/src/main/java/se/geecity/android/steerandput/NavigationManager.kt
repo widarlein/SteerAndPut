@@ -26,18 +26,15 @@ package se.geecity.android.steerandput
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
-import android.util.Log
 import androidx.fragment.app.Fragment
 import se.geecity.android.data.AppExecutors
-import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
-import se.geecity.android.steerandput.common.view.StationShowingFragment
 import se.geecity.android.steerandput.common.view.ViewIdentifier
-import se.geecity.android.steerandput.historicalstation.StationFragment
+import se.geecity.android.steerandput.favorite.FavoriteFragment
+import se.geecity.android.steerandput.station.StationFragment
 import se.geecity.android.steerandput.main.MainPresenter
-import se.geecity.android.steerandput.map.MapFragment
-import se.geecity.android.steerandput.stationlist.favorite.FavoritesFragment
-import se.geecity.android.steerandput.stationlist.list.ListFragment
+import se.geecity.android.steerandput.mapv2.MapFragment
+import se.geecity.android.steerandput.nearby.NearbyFragment
 import java.lang.IllegalStateException
 
 class NavigationManager private constructor(context: Context,
@@ -60,10 +57,10 @@ class NavigationManager private constructor(context: Context,
     }
     fun navigate(navigationRequest: NavigationRequest) {
         when (navigationRequest.viewIdentifier) {
-            ViewIdentifier.LIST -> navigateToFragment(ListFragment().apply { arguments = navigationRequest.arguments }, navigationRequest.viewIdentifier)
             ViewIdentifier.MAP -> navigateToFragment(MapFragment().apply { arguments = navigationRequest.arguments }, navigationRequest.viewIdentifier)
-            ViewIdentifier.FAVORITES -> navigateToFragment(FavoritesFragment().apply { arguments = navigationRequest.arguments }, navigationRequest.viewIdentifier)
+            ViewIdentifier.FAVORITES -> navigateToFragment(FavoriteFragment().apply { arguments = navigationRequest.arguments }, navigationRequest.viewIdentifier)
             ViewIdentifier.STATION -> navigateToFragment(StationFragment().apply { arguments = navigationRequest.arguments }, navigationRequest.viewIdentifier)
+            ViewIdentifier.NEARBY -> navigateToFragment(NearbyFragment(), navigationRequest.viewIdentifier)
         }
     }
 
@@ -90,11 +87,11 @@ class NavigationManager private constructor(context: Context,
 
         val (fragment, tag) = if (!favorites.isEmpty()) {
 
-            FavoritesFragment.newFragment(null, null) to ViewIdentifier.FAVORITES.toString()
+            FavoriteFragment() to ViewIdentifier.FAVORITES.toString()
 
         } else {
 
-            ListFragment.newFragment(null, null) to ViewIdentifier.LIST.toString()
+            NearbyFragment() to ViewIdentifier.NEARBY.toString()
 
         }
 
