@@ -28,6 +28,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.fragment_list.*
 import org.koin.android.ext.android.inject
@@ -38,16 +39,12 @@ import se.geecity.android.domain.entities.Success
 import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.adapter.StationAdapterV2
 import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
-import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.util.hasFineLocationPermission
-import se.geecity.android.steerandput.common.view.StationShowingFragment
 import se.geecity.android.steerandput.common.view.ViewIdentifier
 import se.geecity.android.steerandput.common.view.gone
 import se.geecity.android.steerandput.common.view.visible
 
-class FavoriteFragment : StationShowingFragment() {
-
-    override var stations: List<Station> = listOf()
+class FavoriteFragment : Fragment() {
 
     private val favoriteViewModel: FavoriteViewModel by viewModel()
 

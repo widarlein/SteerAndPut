@@ -28,6 +28,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.fragment_list.*
 import org.koin.android.ext.android.inject
@@ -38,15 +39,11 @@ import se.geecity.android.domain.entities.Success
 import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.adapter.StationAdapterV2
 import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
-import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.util.hasFineLocationPermission
-import se.geecity.android.steerandput.common.view.StationShowingFragment
 import se.geecity.android.steerandput.common.view.ViewIdentifier
 
-//TODO (widar): remove inheritence from StationshowingFragment
-class NearbyFragment() : StationShowingFragment() {
+class NearbyFragment : Fragment() {
 
-    override var stations: List<Station> = listOf()
     private val firebaseLogger: FirebaseLoggerV2 by inject()
 
     private val nearbyViewModel: NearbyViewModel by viewModel()

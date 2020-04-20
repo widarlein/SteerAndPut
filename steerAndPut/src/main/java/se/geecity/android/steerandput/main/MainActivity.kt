@@ -24,92 +24,40 @@
 package se.geecity.android.steerandput.main
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
-import android.os.Parcelable
-import com.google.android.material.tabs.TabLayout
-import androidx.core.app.ActivityCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.appcompat.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.LocationListener
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import se.geecity.android.data.AppExecutors
 import se.geecity.android.steerandput.NavigationManager
 import se.geecity.android.steerandput.R
-import se.geecity.android.steerandput.common.constants.ACTION_BROADCAST_NEW_LOCATION
-import se.geecity.android.steerandput.common.constants.ACTION_FINISHED_REFRESHING_STATIONS
-import se.geecity.android.steerandput.common.constants.ACTION_IS_REFRESHING_STATIONS
-import se.geecity.android.steerandput.common.constants.ACTION_REFRESHING_STATIONS_ERROR
-import se.geecity.android.steerandput.common.constants.ACTION_REQUEST_REFRESH_STATIONS
-import se.geecity.android.steerandput.common.constants.EXTRA_BROADCAST_LOCATION
-import se.geecity.android.steerandput.common.constants.EXTRA_BROADCAST_STATIONS
-import se.geecity.android.steerandput.common.constants.EXTRA_ERROR_MESSAGE
 import se.geecity.android.steerandput.common.constants.TAB_FAVORITES
 import se.geecity.android.steerandput.common.constants.TAB_LIST
 import se.geecity.android.steerandput.common.constants.TAB_MAP
-import se.geecity.android.steerandput.common.logging.FirebaseLogger
-import se.geecity.android.steerandput.common.model.Station
+import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
 import se.geecity.android.steerandput.common.util.hasFineLocationPermission
 import se.geecity.android.steerandput.common.view.ViewIdentifier
-import se.geecity.android.steerandput.map.MapFragment
 import se.geecity.android.steerandput.oss.OpenSourceLicensesDialog
-import se.geecity.android.steerandput.stationlist.favorite.FavoritesFragment
-import se.geecity.android.steerandput.stationlist.list.ListFragment
-import java.util.ArrayList
 
 private const val FINE_LOCATION_PERMISSION_REQUEST = 0
-private const val TAG = "MainActivity"
 
 /**
  * The main activity of the application, acts as container for the fragments.
  */
 class MainActivity : AppCompatActivity(),
         MainView,
-        TabLayout.OnTabSelectedListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        TabLayout.OnTabSelectedListener {
 
-    private var stations: List<Station> = arrayListOf()
-
-    private lateinit var googleApiClient: GoogleApiClient
-    private var location: Location? = null
-
-    private lateinit var localBroadcasManager: LocalBroadcastManager
     private lateinit var favoriteUtil: FavoriteUtil
 
     private val mainPresenter: MainPresenter by inject()
-    private val firebaseLogger: FirebaseLogger by inject()
-
-    private val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                ACTION_REQUEST_REFRESH_STATIONS -> refreshStations()
-            }
-        }
-    }
-
-    private val locationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            this@MainActivity.location = location
-            val intent = Intent(ACTION_BROADCAST_NEW_LOCATION)
-            intent.putExtra(EXTRA_BROADCAST_LOCATION, location)
-            localBroadcasManager.sendBroadcast(intent)
-        }
-    }
+    private val firebaseLogger: FirebaseLoggerV2 by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,12 +65,9 @@ class MainActivity : AppCompatActivity(),
 
         mainPresenter.mainView = this
 
-        localBroadcasManager = LocalBroadcastManager.getInstance(applicationContext)
         favoriteUtil = FavoriteUtil(applicationContext, AppExecutors())
 
         setSupportActionBar(toolbar)
-
-        buildGoogleApiClient()
 
         NavigationManager.init(applicationContext, mainPresenter, supportFragmentManager)
 
@@ -131,11 +76,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onStart() {
         super.onStart()
-        val intentFilter = IntentFilter(ACTION_REQUEST_REFRESH_STATIONS)
-        localBroadcasManager.registerReceiver(broadcastReceiver, intentFilter)
-
-        googleApiClient.connect()
-        refreshStations()
 
         // Bad practice, I know. The beauty of open source is that i you can complain, you can fix it
         if (!hasFineLocationPermission(applicationContext)) {
@@ -147,11 +87,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onStop() {
         super.onStop()
-        localBroadcasManager.unregisterReceiver(broadcastReceiver)
-        if (googleApiClient.isConnected) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, locationListener)
-        }
-        googleApiClient.disconnect()
         NavigationManager.instance?.stop()
     }
 
@@ -186,53 +121,29 @@ class MainActivity : AppCompatActivity(),
         tabLayout.removeOnTabSelectedListener(this)
     }
 
-    override fun newStations(stations: List<Station>) {
-        this@MainActivity.stations = stations
-
-        val intent = Intent(ACTION_FINISHED_REFRESHING_STATIONS).apply {
-            putParcelableArrayListExtra(EXTRA_BROADCAST_STATIONS, stations as ArrayList<out Parcelable>)
-        }
-        localBroadcasManager.sendBroadcast(intent)
-    }
-
-    override fun onStationError(error: String, throwable: Throwable?) {
-        sendErrorBroadcast(throwable ?: Throwable(error))
-    }
-
     override fun onTabSelected(tab: TabLayout.Tab) {
         val tag = tab.tag as String
         val (viewIdentifier, arguments) = when (tag) {
             TAB_FAVORITES -> Pair(ViewIdentifier.FAVORITES,
-                    FavoritesFragment.createArgumentsBundle(stations, location))
-            TAB_LIST -> Pair(ViewIdentifier.NEARBY, Bundle())
+                    Bundle.EMPTY)
+            TAB_LIST -> Pair(ViewIdentifier.NEARBY, Bundle.EMPTY)
             TAB_MAP -> Pair(ViewIdentifier.MAP,
-                    MapFragment.createArgumentsBundle(stations, location))
-            else -> Pair(ViewIdentifier.LIST,
-                    ListFragment.createArgumentsBundle(stations, location))
+                    Bundle.EMPTY)
+            else -> Pair(ViewIdentifier.NEARBY, Bundle.EMPTY)
         }
 
         val navigationRequest = NavigationManager.NavigationRequest(viewIdentifier, arguments)
         NavigationManager.instance?.navigate(navigationRequest)
     }
 
-    override fun onConnected(connectionHint: Bundle?) {
-        if (hasFineLocationPermission(applicationContext)) {
-            startLocationUpdates()
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             FINE_LOCATION_PERMISSION_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-                    startLocationUpdates()
+                //TODO do nothing, I guess? TBD
                 }
             }
         }
-    }
-
-    override fun onConnectionFailed(connectionResult: ConnectionResult) {
-        Log.e(TAG, "Location service connection failure: $connectionResult")
     }
 
     override fun selectFavoriteTab() {
@@ -251,7 +162,7 @@ class MainActivity : AppCompatActivity(),
         //ugly hack is ugly
         val tab = when (viewIdentifier) {
             ViewIdentifier.FAVORITES -> tabLayout.getTabAt(0)
-            ViewIdentifier.LIST -> tabLayout.getTabAt(1)
+            ViewIdentifier.NEARBY -> tabLayout.getTabAt(1)
             ViewIdentifier.MAP -> tabLayout.getTabAt(2)
             else -> {
                 tabLayout.newTab()
@@ -265,16 +176,6 @@ class MainActivity : AppCompatActivity(),
     override fun onTabReselected(tab: TabLayout.Tab?) {}
 
     override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-    override fun onConnectionSuspended(i: Int) {}
-
-    private fun buildGoogleApiClient() {
-        googleApiClient = GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build()
-    }
 
     private fun createTabs() {
         val favoritesTab = tabLayout.newTab().apply {
@@ -304,35 +205,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun refreshStations() {
-        val intent = Intent(ACTION_IS_REFRESHING_STATIONS)
-        localBroadcasManager.sendBroadcast(intent)
         mainPresenter.refreshPressed()
-    }
-
-    private fun sendErrorBroadcast(throwable: Throwable) {
-        val intent = Intent(ACTION_REFRESHING_STATIONS_ERROR)
-        intent.putExtra(EXTRA_ERROR_MESSAGE, throwable.localizedMessage)
-        localBroadcasManager.sendBroadcast(intent)
-    }
-
-    private fun startLocationUpdates() {
-        try {
-            val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-            location = lastLocation
-            if (lastLocation != null) {
-                locationListener.onLocationChanged(lastLocation)
-            }
-
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient,
-                    buildLocationRequest(), locationListener)
-        } catch (securityException: SecurityException) {
-            // This should not happen.
-        }
-    }
-
-    private fun buildLocationRequest() = LocationRequest().apply {
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        interval = 5000
-        fastestInterval = 200
     }
 }

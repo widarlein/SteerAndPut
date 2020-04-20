@@ -24,7 +24,6 @@
 package se.geecity.android.steerandput.common.view
 
 enum class ViewIdentifier {
-    LIST,
     FAVORITES,
     MAP,
     STATION,

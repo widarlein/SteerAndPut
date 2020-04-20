@@ -23,13 +23,10 @@
  */
 package se.geecity.android.steerandput.main
 
-import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.view.ViewIdentifier
 
 interface MainView {
 
-    fun newStations(stations: List<Station>)
-    fun onStationError(error: String, throwable: Throwable?)
     fun selectFavoriteTab()
     fun selectListTab()
     fun selectMapTab()

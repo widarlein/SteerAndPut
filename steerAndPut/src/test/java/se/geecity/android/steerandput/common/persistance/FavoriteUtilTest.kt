@@ -29,6 +29,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import se.geecity.android.data.AppExecutors
 
 private const val FAVORITES_IDS_STRING = "1,2,5,6"
 
@@ -40,7 +41,7 @@ class FavoriteUtilTest {
 
     @Test
     fun getFavorites_noFavs() {
-        val underTest = FavoriteUtil(context)
+        val underTest = FavoriteUtil(context, AppExecutors())
         val favorites = underTest.getFavorites()
         assertThat(favorites).isEqualTo(setOf<Int>())
     }
@@ -50,14 +51,14 @@ class FavoriteUtilTest {
         val prefs = context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
         prefs.edit().putString(PREFS_KEY, FAVORITES_IDS_STRING).commit()
 
-        val underTest = FavoriteUtil(context)
+        val underTest = FavoriteUtil(context, AppExecutors())
         val favorites = underTest.getFavorites()
         assertThat(favorites).isEqualTo(expectedFavorites)
     }
 
     @Test
     fun saveFavorites_empty() {
-        val underTest = FavoriteUtil(context)
+        val underTest = FavoriteUtil(context, AppExecutors())
         underTest.saveFavorites(setOf())
 
         val prefs = context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
