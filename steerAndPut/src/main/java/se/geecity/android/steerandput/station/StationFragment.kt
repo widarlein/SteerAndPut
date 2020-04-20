@@ -28,6 +28,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -45,17 +46,13 @@ import se.geecity.android.domain.entities.Success
 import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.adapter.StationInteractionListener
 import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
-import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.util.getDistanceBetweenAsString
 import se.geecity.android.steerandput.common.util.hasCoarseLocationPermission
 import se.geecity.android.steerandput.common.util.hasFineLocationPermission
-import se.geecity.android.steerandput.common.view.StationShowingFragment
 import se.geecity.android.steerandput.common.view.ViewIdentifier
 import se.geecity.android.steerandput.common.view.gone
 
-//TODO remove the inheritence to station showing
-class StationFragment : StationShowingFragment() {
-    override var stations: List<Station> = listOf()
+class StationFragment : Fragment() {
 
     private val station: StationObject by lazy { station() }
     private val stationViewModel: StationViewModel by viewModel()

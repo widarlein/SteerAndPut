@@ -28,6 +28,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -46,14 +47,10 @@ import se.geecity.android.domain.entities.StationObject
 import se.geecity.android.domain.entities.Success
 import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.logging.FirebaseLogger
-import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.util.hasFineLocationPermission
-import se.geecity.android.steerandput.common.view.StationShowingFragment
 import se.geecity.android.steerandput.common.view.ViewIdentifier
 
-//TODO (widar): remove inheritence on StationShowingFragment
-class MapFragment() : StationShowingFragment() {
-    override var stations: List<Station> = listOf()
+class MapFragment : Fragment() {
 
     private val mapViewModel: MapViewModel by viewModel()
     private val firebaseLogger: FirebaseLogger by inject()

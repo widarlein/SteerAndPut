@@ -27,6 +27,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import android.util.Log
+import androidx.fragment.app.Fragment
 import se.geecity.android.data.AppExecutors
 import se.geecity.android.steerandput.common.model.Station
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
@@ -75,7 +76,7 @@ class NavigationManager private constructor(context: Context,
         }
     }
 
-    private fun navigateToFragment(fragment: StationShowingFragment, viewIdentifier: ViewIdentifier) {
+    private fun navigateToFragment(fragment: Fragment, viewIdentifier: ViewIdentifier) {
 
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.fragmentContainer, fragment, viewIdentifier.toString())
