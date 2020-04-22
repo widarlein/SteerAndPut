@@ -26,9 +26,5 @@ package se.geecity.android.steerandput.main
 import se.geecity.android.steerandput.common.view.ViewIdentifier
 
 interface MainView {
-
-    fun selectFavoriteTab()
-    fun selectListTab()
-    fun selectMapTab()
     fun markTabAsActiveWithoutEvent(viewIdentifier: ViewIdentifier)
 }
