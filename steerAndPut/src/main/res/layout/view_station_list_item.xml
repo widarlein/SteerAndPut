@@ -29,10 +29,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/ContentFrame"
-    android:padding="8dp"
+    android:padding="16dp"
     android:layout_marginTop="8dp"
-    >
+    android:background="@drawable/station_item_background">
 
 
     <TextView
@@ -58,7 +57,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
         android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="@+id/station_item_bikes_img"
         app:layout_constraintStart_toEndOf="@+id/station_item_bikes_img"
@@ -70,7 +68,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
         android:src="@drawable/p_icon"
         app:layout_constraintBottom_toBottomOf="@+id/station_item_bikes_img"
         app:layout_constraintStart_toEndOf="@+id/stationBikeText"
@@ -81,7 +78,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
         android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="@+id/station_item_stand_img"
         app:layout_constraintStart_toEndOf="@+id/station_item_stand_img"

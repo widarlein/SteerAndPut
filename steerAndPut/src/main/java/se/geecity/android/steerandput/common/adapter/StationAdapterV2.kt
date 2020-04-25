@@ -23,29 +23,25 @@
  */
 package se.geecity.android.steerandput.common.adapter
 
-import android.content.Context
 import android.location.Location
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.view_station_list_item.view.*
 import se.geecity.android.domain.entities.StationObject
 import se.geecity.android.steerandput.R
 import se.geecity.android.steerandput.common.persistance.FavoriteUtil
 import se.geecity.android.steerandput.common.util.getDistanceBetweenAsString
-import java.util.Collections
-import java.util.Comparator
+import java.util.*
 
 /**
  * Adapter for showing stations in a RecyclerView
  */
-class StationAdapterV2(context: Context,
-                       private val stationInteractionListener: StationInteractionListener,
+class StationAdapterV2(private val stationInteractionListener: StationInteractionListener,
                        private val favoriteUtil: FavoriteUtil) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var stations: List<StationObject> = mutableListOf()
@@ -55,7 +51,6 @@ class StationAdapterV2(context: Context,
             notifyDataSetChanged()
             adapterDataObserver?.onStations(value)
         }
-    var favorites: Set<Int> = setOf()
     var location: Location? = null
         set(value) {
             field = value
@@ -66,9 +61,6 @@ class StationAdapterV2(context: Context,
     var adapterDataObserver: AdapterDataObserver? = null
 
     private val stationComparator = StationComparator()
-
-    private val colorItemEnabled = ContextCompat.getColor(context, R.color.station_list_item_enabled)
-    private val colorItemDisabled = ContextCompat.getColor(context, R.color.station_list_item_disabled)
 
     init {
         setHasStableIds(true)
@@ -115,13 +107,7 @@ class StationAdapterV2(context: Context,
             holder.star.visibility = View.GONE
         }
 
-        if (stationObject.isOpen) {
-            holder.itemView.isEnabled = true
-            holder.itemView.setBackgroundColor(colorItemEnabled)
-        } else {
-            holder.itemView.isEnabled = false
-            holder.itemView.setBackgroundColor(colorItemDisabled)
-        }
+        holder.itemView.isEnabled = stationObject.isOpen
 
         val location = this.location
         if (location != null) {
@@ -145,13 +131,7 @@ class StationAdapterV2(context: Context,
             holder.star.visibility = View.GONE
         }
 
-        if (stationObject.isOpen) {
-            holder.itemView.isEnabled = true
-            holder.itemView.setBackgroundColor(colorItemEnabled)
-        } else {
-            holder.itemView.isEnabled = false
-            holder.itemView.setBackgroundColor(colorItemDisabled)
-        }
+        holder.itemView.isEnabled = stationObject.isOpen
 
         val location = this.location
         if (location != null) {

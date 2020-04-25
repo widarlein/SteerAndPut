@@ -31,8 +31,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
     android:padding="16dp"
-    android:background="?attr/selectableItemBackground"
-    >
+    android:background="@drawable/bike_item_background" >
 
     <ImageView
         android:id="@+id/station_item_bikes_img"
