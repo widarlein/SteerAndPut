@@ -30,6 +30,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
@@ -51,8 +52,7 @@ private const val FINE_LOCATION_PERMISSION_REQUEST = 0
  * The main activity of the application, acts as container for the fragments.
  */
 class MainActivity : AppCompatActivity(),
-        MainView,
-        TabLayout.OnTabSelectedListener {
+        MainView {
 
     private lateinit var favoriteUtil: FavoriteUtil
 
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(),
 
         NavigationManager.init(applicationContext, mainPresenter, supportFragmentManager)
 
-        createTabs()
+        initBottomNavigation()
     }
 
     override fun onStart() {
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(),
         menu.add(R.string.main_menu_refresh_text)
                 .setIcon(R.drawable.ic_refresh)
                 .setOnMenuItemClickListener {
-                    refreshStations()
+                    mainPresenter.refreshPressed()
                     firebaseLogger.refreshButtonClicked()
                     true
                 }
@@ -116,26 +116,6 @@ class MainActivity : AppCompatActivity(),
         return true
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        tabLayout.removeOnTabSelectedListener(this)
-    }
-
-    override fun onTabSelected(tab: TabLayout.Tab) {
-        val tag = tab.tag as String
-        val (viewIdentifier, arguments) = when (tag) {
-            TAB_FAVORITES -> Pair(ViewIdentifier.FAVORITES,
-                    Bundle.EMPTY)
-            TAB_LIST -> Pair(ViewIdentifier.NEARBY, Bundle.EMPTY)
-            TAB_MAP -> Pair(ViewIdentifier.MAP,
-                    Bundle.EMPTY)
-            else -> Pair(ViewIdentifier.NEARBY, Bundle.EMPTY)
-        }
-
-        val navigationRequest = NavigationManager.NavigationRequest(viewIdentifier, arguments)
-        NavigationManager.instance?.navigate(navigationRequest)
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             FINE_LOCATION_PERMISSION_REQUEST -> {
@@ -146,65 +126,40 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun selectFavoriteTab() {
-        tabLayout.getTabAt(0)?.select()
-    }
-
-    override fun selectListTab() {
-        tabLayout.getTabAt(1)?.select()
-    }
-
-    override fun selectMapTab() {
-        tabLayout.getTabAt(2)?.select()
-    }
 
     override fun markTabAsActiveWithoutEvent(viewIdentifier: ViewIdentifier) {
         //ugly hack is ugly
-        val tab = when (viewIdentifier) {
-            ViewIdentifier.FAVORITES -> tabLayout.getTabAt(0)
-            ViewIdentifier.NEARBY -> tabLayout.getTabAt(1)
-            ViewIdentifier.MAP -> tabLayout.getTabAt(2)
-            else -> {
-                tabLayout.newTab()
-            }
+        val itemId = when (viewIdentifier) {
+            ViewIdentifier.FAVORITES -> R.id.nav_favorites
+            ViewIdentifier.NEARBY -> R.id.nav_nearby
+            ViewIdentifier.MAP -> R.id.nav_map
+            else -> R.id.nav_nearby
         }
-        tabLayout.removeOnTabSelectedListener(this)
-        tab?.select()
-        tabLayout.addOnTabSelectedListener(this)
+        bottomNavigationView.setOnNavigationItemSelectedListener(null)
+        bottomNavigationView.selectedItemId = itemId
+        bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
     }
 
-    override fun onTabReselected(tab: TabLayout.Tab?) {}
+    private fun initBottomNavigation() {
 
-    override fun onTabUnselected(tab: TabLayout.Tab?) {}
+        val navId = if (favoriteUtil.getFavorites().isEmpty()) {
+            R.id.nav_nearby
+        } else R.id.nav_favorites
 
-    private fun createTabs() {
-        val favoritesTab = tabLayout.newTab().apply {
-            setText(R.string.main_tab_favorites_title)
-            tag = TAB_FAVORITES
-        }
-        val listTab = tabLayout.newTab().apply {
-            setText(R.string.main_tab_list_title)
-            tag = TAB_LIST
-        }
-        val mapTab = tabLayout.newTab().apply {
-            setText(R.string.main_tab_map_title)
-            tag = TAB_MAP
-        }
-
-        tabLayout.addTab(favoritesTab, 0)
-        tabLayout.addTab(listTab, 1)
-        tabLayout.addTab(mapTab, 2)
-
-        if (favoriteUtil.getFavorites().size > 0) {
-            favoritesTab.select()
-        } else {
-            listTab.select()
-        }
-
-        tabLayout.addOnTabSelectedListener(this)
+        bottomNavigationView.selectedItemId = navId
+        bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
     }
 
-    private fun refreshStations() {
-        mainPresenter.refreshPressed()
+    val onNavigationItemSelectedListener =  BottomNavigationView.OnNavigationItemSelectedListener {item: MenuItem ->
+        val viewIdentifier = when (item.itemId) {
+            R.id.nav_favorites -> ViewIdentifier.FAVORITES
+            R.id.nav_nearby -> ViewIdentifier.NEARBY
+            R.id.nav_map -> ViewIdentifier.MAP
+            else -> ViewIdentifier.NEARBY
+        }
+
+        val request = NavigationManager.NavigationRequest(viewIdentifier, Bundle.EMPTY)
+        NavigationManager.instance?.navigate(request)
+        true
     }
 }
