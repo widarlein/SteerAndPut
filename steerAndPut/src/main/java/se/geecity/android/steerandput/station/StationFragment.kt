@@ -95,6 +95,7 @@ class StationFragment : Fragment() {
         }
 
         firebaseLogger.pageView(ViewIdentifier.STATION, station)
+        firebaseLogger.stationDetailsView()
     }
 
     override fun onStart() {

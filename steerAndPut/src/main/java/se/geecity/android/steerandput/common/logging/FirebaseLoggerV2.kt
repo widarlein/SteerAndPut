@@ -32,13 +32,13 @@ import se.geecity.android.steerandput.common.view.ViewIdentifier
 
 class FirebaseLoggerV2(private val firebaseAnalytics: FirebaseAnalytics, private val context: Context) {
 
-    fun pageView(viewIdentifier: ViewIdentifier, StationObject: StationObject? = null) {
+    fun pageView(viewIdentifier: ViewIdentifier, stationObject: StationObject? = null) {
         val bundle = Bundle()
         bundle.putString(VIEW_ID, viewIdentifier.toString())
 
-        if (StationObject != null) {
-            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, StationObject.id.toString())
-            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, StationObject.name)
+        if (stationObject != null) {
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, stationObject.id.toString())
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, stationObject.name)
         }
 
         firebaseAnalytics.logEvent(PAGE_VIEW, bundle)
@@ -102,4 +102,7 @@ class FirebaseLoggerV2(private val firebaseAnalytics: FirebaseAnalytics, private
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
     }
 
+    fun stationDetailsView() {
+        firebaseAnalytics.logEvent(STATION_DETAILS_VIEW, null)
+    }
 }
