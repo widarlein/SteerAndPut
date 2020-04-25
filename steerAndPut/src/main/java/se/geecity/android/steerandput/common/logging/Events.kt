@@ -50,3 +50,8 @@ const val REMOVE_FAVORITE = "remove_favorite"
  * {@link se.geecity.android.steerandput.common.logging.EventParams.VIEW_ID}
  */
 const val PAGE_VIEW = "page_view"
+
+/**
+ * An ugly hack specific page view for help with in-app messaging.
+ */
+const val STATION_DETAILS_VIEW = "station_details_view"
