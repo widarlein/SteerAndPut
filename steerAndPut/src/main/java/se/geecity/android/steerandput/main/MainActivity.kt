@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity(),
         when (requestCode) {
             FINE_LOCATION_PERMISSION_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-                //TODO do nothing, I guess? TBD
+                    mainPresenter.locationPermissionGranted()
                 }
             }
         }

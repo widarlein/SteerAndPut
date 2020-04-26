@@ -23,6 +23,7 @@
  */
 package se.geecity.android.steerandput.nearby
 
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,15 +42,21 @@ import se.geecity.android.steerandput.common.adapter.StationAdapterV2
 import se.geecity.android.steerandput.common.logging.FirebaseLoggerV2
 import se.geecity.android.steerandput.common.util.hasFineLocationPermission
 import se.geecity.android.steerandput.common.view.ViewIdentifier
+import se.geecity.android.steerandput.main.MainComm
 
 class NearbyFragment : Fragment() {
 
     private val firebaseLogger: FirebaseLoggerV2 by inject()
+    private val mainComm: MainComm by inject()
 
     private val nearbyViewModel: NearbyViewModel by viewModel()
 
     private val adapter: StationAdapterV2 by inject()
     private lateinit var connectionErrorView: View
+
+    private val onLocation: (Location) -> Unit = { location ->
+        adapter.location = location
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_list, container,  false)
@@ -71,6 +78,12 @@ class NearbyFragment : Fragment() {
         }
     }
 
+    private val mainObserver = object : MainComm.MainObserver {
+        override fun locationPermissionGranted() {
+            nearbyViewModel.locationLiveData.observe(this@NearbyFragment, onLocation)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         nearbyViewModel.stationObjects.observe(this) { stationObjectsResource ->
@@ -89,10 +102,16 @@ class NearbyFragment : Fragment() {
                 }
             }
         }
+
         if (hasFineLocationPermission(requireContext())) {
-            nearbyViewModel.locationLiveData.observe(this) { location ->
-                adapter.location = location
-            }
+            nearbyViewModel.locationLiveData.observe(this, onLocation)
         }
+
+        mainComm.addObserver(mainObserver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mainComm.removeObserver(mainObserver)
     }
 }
