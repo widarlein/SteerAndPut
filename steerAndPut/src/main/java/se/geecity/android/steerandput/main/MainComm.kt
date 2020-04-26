@@ -43,7 +43,14 @@ class MainComm(private val appExecutors: AppExecutors) {
         }
     }
 
+    fun locationPermissionGranted() {
+        appExecutors.mainThread.execute {
+            observers.forEach(MainObserver::locationPermissionGranted)
+        }
+    }
+
     interface MainObserver {
-        fun refreshRequested()
+        fun refreshRequested() {}
+        fun locationPermissionGranted() {}
     }
 }

@@ -39,4 +39,8 @@ class MainPresenter(private val mainComm: MainComm) {
     fun viewActiveFromBackstack(viewIdentifier: ViewIdentifier) {
         mainView.markTabAsActiveWithoutEvent(viewIdentifier)
     }
+
+    fun locationPermissionGranted() {
+        mainComm.locationPermissionGranted()
+    }
 }

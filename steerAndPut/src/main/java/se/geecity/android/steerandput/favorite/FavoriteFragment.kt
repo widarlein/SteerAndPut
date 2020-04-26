@@ -23,6 +23,7 @@
  */
 package se.geecity.android.steerandput.favorite
 
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,15 +44,21 @@ import se.geecity.android.steerandput.common.util.hasFineLocationPermission
 import se.geecity.android.steerandput.common.view.ViewIdentifier
 import se.geecity.android.steerandput.common.view.gone
 import se.geecity.android.steerandput.common.view.visible
+import se.geecity.android.steerandput.main.MainComm
 
 class FavoriteFragment : Fragment() {
 
     private val favoriteViewModel: FavoriteViewModel by viewModel()
+    private val mainComm: MainComm by inject()
 
     private val firebaseLogger: FirebaseLoggerV2 by inject()
     private val adapter: StationAdapterV2 by inject()
     private lateinit var connectionErrorView: View
     private lateinit var emptyView: View
+
+    private val onLocation: (Location) -> Unit = { location ->
+        adapter.location = location
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -69,6 +76,12 @@ class FavoriteFragment : Fragment() {
 
         listSwipeRefreshLayout.setOnRefreshListener {
             favoriteViewModel.fetchStationObjects()
+        }
+    }
+
+    private val mainObserver = object : MainComm.MainObserver {
+        override fun locationPermissionGranted() {
+            favoriteViewModel.location.observe(this@FavoriteFragment, onLocation)
         }
     }
 
@@ -97,10 +110,15 @@ class FavoriteFragment : Fragment() {
             }
         }
         if (hasFineLocationPermission(requireContext())) {
-            favoriteViewModel.location.observe(this) { location ->
-                adapter.location = location
-            }
+            favoriteViewModel.location.observe(this, onLocation)
         }
+
+        mainComm.addObserver(mainObserver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mainComm.removeObserver(mainObserver)
     }
 
     private fun initConnectionErrorView(layoutInflater: LayoutInflater) {
