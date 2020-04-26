@@ -7,8 +7,7 @@
     public static int e(...);
 }
 
--keep class se.geecity.android.steerandput.common.model.** { *; }
--keep class se.geecity.android.steerandput.historicalstation.model.** { *; }
+-keep class se.geecity.android.data.model.** { *; }
 -dontwarn se.geecity.android.**
 -keepattributes Exceptions, Signature, InnerClasses
 
